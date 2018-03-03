@@ -23,11 +23,18 @@ import {
   AreaHighlight
 } from "react-pdf-annotator";
 
-const resetHash = () => {
-  location.hash = "";
-};
-
 const url = 'https://arxiv.org/pdf/1802.08228.pdf';
+const getNextId = () => String(Math.random()).slice(2);
+const parseIdFromHash = () => location.hash.slice("#highlight-".length);
+const resetHash = () => { location.hash = ""; };
+
+// functional popup component
+const HighlightPopup = ({ comment }) =>
+  comment.text ? (
+    <div className="Highlight__popup">
+      {comment.emoji} {comment.text}
+    </div>
+  ) : null;
 
 class PdfViewer extends React.Component {
   constructor(props) {
@@ -35,6 +42,62 @@ class PdfViewer extends React.Component {
     this.state = {
       highlights: []
     }
+  }
+
+  resetHighlights = () => {
+    this.setState({
+      highlights: []
+    });
+  };
+
+  scrollViewerTo = (highlight: any) => {};
+
+  scrollToHighlightFromHash = () => {
+    const highlight = this.getHighlightById(parseIdFromHash());
+
+    if (highlight) {
+      this.scrollViewerTo(highlight);
+    }
+  };
+
+  componentDidMount() {
+    window.addEventListener(
+      "hashchange",
+      this.scrollToHighlightFromHash,
+      false
+    );
+  }
+
+  getHighlightById(id: string) {
+    const { highlights } = this.state;
+
+    return highlights.find(highlight => highlight.id === id);
+  }
+
+  addHighlight(highlight: T_NewHighlight) {
+    const { highlights } = this.state;
+
+    console.log("Saving highlight", highlight);
+
+    this.setState({
+      highlights: [{ ...highlight, id: getNextId() }, ...highlights]
+    });
+  }
+
+  updateHighlight(highlightId: string, position: Object, content: Object) {
+    console.log("Updating highlight", highlightId, position, content);
+
+    this.setState({
+      highlights: this.state.highlights.map(h => {
+        return h.id === highlightId
+          ? {
+              ...h,
+              position: { ...h.position, ...position },
+              content: { ...h.content, ...content }
+            }
+          : h;
+      })
+    });
   }
 
   render() {
@@ -114,7 +177,7 @@ class PdfViewer extends React.Component {
                     />
                   );
                 }}
-                highlights={this.highlights}
+                highlights={this.state.highlights}
               />
             )}
         </PdfLoader>
