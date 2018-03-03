@@ -14,8 +14,17 @@ module.exports = {
 
     module: {
         loaders: [{
+            test: /\.jsx?$/,
+            exclude: /node_modules/,
+            loaders: ['react-hot', 'babel-loader?presets[]=react,presets[]=es2015']
+        },
+        {
             test: /\.scss$/,
             loader: 'style!css?localIdentName=[path][name]--[local]!postcss-loader!sass',
+        },
+        {
+            test: /\.css$/,
+            loaders: ['style-loader', 'css-loader']
         }],
     },
 
