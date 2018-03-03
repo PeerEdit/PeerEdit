@@ -74,9 +74,10 @@ function Sidebar(props) {
       </div>
 
       <ul className="sidebar__highlights">
-        {highlights.map((highlight, index) => (
+        {highlights.sort((a, b) => a.position.boundingRect.y1 > b.position.boundingRect.y1)
+                   .map((highlight, index) => (
           <li
-            key={index}
+            key={highlight.id}
             className="sidebar__highlight"
             onClick={() => {
               updateHash(highlight);
