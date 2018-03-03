@@ -14,17 +14,27 @@ import TextField from 'material-ui/TextField';
 
 import { Document, Page } from 'react-pdf';
 
+import {
+  PdfLoader,
+  PdfAnnotator,
+  Tip,
+  Highlight,
+  Popup,
+  AreaHighlight
+} from "react-pdf-annotator";
+
+const resetHash = () => {
+  location.hash = "";
+};
+
+const url = 'https://arxiv.org/pdf/1802.08228.pdf';
+
 class PdfViewer extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      numPages: null,
-      pageNumber: 1,
+      highlights: []
     }
-  }
-
-  onDocumentLoad = ({ numPages }) => {
-    this.setState({ numPages });
   }
 
   render() {
@@ -33,13 +43,81 @@ class PdfViewer extends React.Component {
     return (
       <div>
         <h1>PDF Viewer and Editor</h1>
-        <Document
-          file="https://arxiv.org/pdf/1708.08021.pdf"
-          onLoadSuccess={this.onDocumentLoad}
-        >
-          <Page pageNumber={pageNumber} />
-        </Document>
-        <p>Page {pageNumber} of {numPages}</p>
+        <PdfLoader url={url} beforeLoad={<h1> Loading Image </h1>}>
+            {pdfDocument => (
+              <PdfAnnotator
+                pdfDocument={pdfDocument}
+                enableAreaSelection={event => event.altKey}
+                onScrollChange={resetHash}
+                scrollRef={scrollTo => {
+                  this.scrollViewerTo = scrollTo;
+
+                  this.scrollToHighlightFromHash();
+                }}
+                url={url}
+                onSelectionFinished={(
+                  position,
+                  content,
+                  hideTipAndSelection,
+                  transformSelection
+                ) => (
+                  <Tip
+                    onOpen={transformSelection}
+                    onConfirm={comment => {
+                      this.addHighlight({ content, position, comment });
+
+                      hideTipAndSelection();
+                    }}
+                  />
+                )}
+                highlightTransform={(
+                  highlight,
+                  index,
+                  setTip,
+                  hideTip,
+                  viewportToScaled,
+                  screenshot,
+                  isScrolledTo
+                ) => {
+                  const isTextHighlight = !Boolean(
+                    highlight.content && highlight.content.image
+                  );
+
+                  const component = isTextHighlight ? (
+                    <Highlight
+                      isScrolledTo={isScrolledTo}
+                      position={highlight.position}
+                      comment={highlight.comment}
+                    />
+                  ) : (
+                    <AreaHighlight
+                      highlight={highlight}
+                      onChange={boundingRect => {
+                        this.updateHighlight(
+                          highlight.id,
+                          { boundingRect: viewportToScaled(boundingRect) },
+                          { image: screenshot(boundingRect) }
+                        );
+                      }}
+                    />
+                  );
+
+                  return (
+                    <Popup
+                      popupContent={<HighlightPopup {...highlight} />}
+                      onMouseOver={popupContent =>
+                        setTip(highlight, highlight => popupContent)
+                      }
+                      onMouseOut={hideTip}
+                      key={index}
+                      children={component}
+                    />
+                  );
+                }}
+                highlights={this.highlights}
+              />
+            )}
+        </PdfLoader>
       </div>
     )
   }
