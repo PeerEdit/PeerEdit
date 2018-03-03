@@ -96,8 +96,8 @@ export class Header extends Component {
                                 </MenuItem>
 
                                 <Divider />
-                                <MenuItem onClick={() => this.dispatchNewRoute('/chat')}>
-                                    Chat
+                                <MenuItem onClick={() => this.dispatchNewRoute('/pdfviewer')}>
+                                    PdfViewer
                                 </MenuItem>
 
                                 <Divider />

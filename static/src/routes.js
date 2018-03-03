@@ -12,7 +12,7 @@ import ProtectedView from './components/ProtectedView';
 import Analytics from './components/Analytics';
 import NotFound from './components/NotFound';
 import Threads from './components/ThreadView';
-import ChatView from './components/ChatView';
+import PdfViewer from './components/PdfViewer';
 
 import { DetermineAuth } from './components/DetermineAuth';
 import { requireAuthentication } from './components/AuthenticatedComponent';
@@ -26,7 +26,7 @@ export default (
         <Route path="home" component={requireNoAuthentication(HomeContainer)} />
         <Route path="analytics" component={requireAuthentication(Analytics)} />
         <Route path="browse" component={requireAuthentication(Threads)} />
-        <Route path="chat" component={requireAuthentication(ChatView)} />
+        <Route path="pdfviewer" component={requireAuthentication(PdfViewer)} />
         <Route path="*" component={DetermineAuth(NotFound)} />
     </Route>
 );
