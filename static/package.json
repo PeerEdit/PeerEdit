@@ -117,6 +117,7 @@
     "yargs": "^6.5.0"
   },
   "dependencies": {
+    "fuse.js": "^3.2.0",
     "react-pdf": "^2.5.3",
     "react-pdf-annotator": "0.0.5"
   }
