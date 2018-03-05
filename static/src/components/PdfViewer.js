@@ -11,6 +11,9 @@ import Avatar from 'material-ui/Avatar';
 
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
+import FlatButton from 'material-ui/FlatButton';
+
+import Fuse from 'fuse.js'
 
 import { Document, Page } from 'react-pdf';
 
@@ -58,9 +61,53 @@ function Spinner(props) {
   );
 }
 
+class AnnotationSearchBar extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { value: "" };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.clearSearchBar = this.clearSearchBar.bind(this);
+    this.searchHighlights = props.searchHighlights;
+  }
+
+  handleChange(event) {
+    this.setState({ value: event.target.value });
+    this.searchHighlights( event.target.value );
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+  }
+
+  clearSearchBar(event) {
+    this.setState({value: ""});
+    this.searchHighlights( "" );
+    event.preventDefault();
+  }
+
+  render() {
+    return (
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <label>
+            Search Annotations:
+            <input type="text" name="search" value={this.state.value} onChange={this.handleChange} />
+          </label>
+        </form>
+        <FlatButton label="clear" onClick={this.clearSearchBar} />
+      </div>
+    )
+  }
+}
+
 function Sidebar(props) {
-  let highlights = props.highlights
-  let resetHighlights = props.resetHighlights
+  let highlights = props.highlights;
+  let resetHighlights = props.resetHighlights;
+  let searchHighlights = props.searchHighlights;
+
   return (
     <div className="sidebar" style={{ width: "25vw" }}>
       <div className="description" style={{ padding: "1rem" }}>
@@ -72,6 +119,8 @@ function Sidebar(props) {
           </small>
         </p>
       </div>
+
+      <AnnotationSearchBar searchHighlights={searchHighlights} />
 
       <ul className="sidebar__highlights">
         {highlights.sort((a, b) => a.position.boundingRect.y1 > b.position.boundingRect.y1)
@@ -128,17 +177,38 @@ const HighlightPopup = ({ comment }) =>
     </div>
   ) : null;
 
+const showAllHighlightsFilter = (highlights: Array<Object>) => {
+  return highlights;
+};
+
+const showNoHighlightsFilter = (highlights: Array<Object>) => {
+  return [];
+};
+
+const fuseOptions = {
+  keys: ['comment.text'],
+  id: 'id'
+};
+
 class PdfViewer extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      highlights: []
+      highlights: [],
+      highlightsFilter: showAllHighlightsFilter,
+      fuseInterface: new Fuse([], fuseOptions)
     }
+
+    this.searchHighlights = this.searchHighlights.bind(this);
   }
 
   resetHighlights = () => {
-    this.setState({
-      highlights: []
+    this.setState((prevState, props) => {
+      return {
+        highlights: [],
+        highlightsFilter: showAllHighlightsFilter,
+        fuseInterface: new Fuse([], fuseOptions)
+      }
     });
   };
 
@@ -171,16 +241,20 @@ class PdfViewer extends React.Component {
 
     console.log("Saving highlight", highlight);
 
-    this.setState({
-      highlights: [{ ...highlight, id: getNextId() }, ...highlights]
+    this.setState((prevState, props) => {
+      let nxtHighlights = [{ ...highlight, id: getNextId() }, ...highlights]
+      return {
+        highlights: nxtHighlights,
+        fuseInterface: new Fuse(nxtHighlights, fuseOptions)
+      }
     });
   }
 
   updateHighlight(highlightId: string, position: Object, content: Object) {
     console.log("Updating highlight", highlightId, position, content);
 
-    this.setState({
-      highlights: this.state.highlights.map(h => {
+    this.setState( (prevState, props) => {
+      let nxtHighlights = this.state.highlights.map(h => {
         return h.id === highlightId
           ? {
               ...h,
@@ -188,8 +262,26 @@ class PdfViewer extends React.Component {
               content: { ...h.content, ...content }
             }
           : h;
-      })
+        })
+
+      return {
+        fuseInterface: new Fuse(nxtHighlights, fuseOptions),
+        highlights: nxtHighlights
+      }
     });
+  }
+
+  searchHighlights(s: string) {
+    console.log("Exec search", s);
+    if (s === '') {
+      this.setState({highlightsFilter: showAllHighlightsFilter});
+      return;
+    }
+
+    let ids = this.state.fuseInterface.search(s)
+    this.setState({highlightsFilter: (highlights) => {
+      return highlights.filter( (highlight) => { return ids.includes(highlight.id); });
+    }})
   }
 
   render() {
@@ -199,8 +291,9 @@ class PdfViewer extends React.Component {
       <Paper>
         <div className="MainPdfViewerPane" style={{ display: "flex", height: "100vh" }}>
           <Sidebar
-            highlights={ this.state.highlights }
+            highlights={ this.state.highlightsFilter(this.state.highlights) }
             resetHighlights={ this.resetHighlights }
+            searchHighlights={ this.searchHighlights }
           />
           <div
             style={{
@@ -281,7 +374,7 @@ class PdfViewer extends React.Component {
                         />
                       );
                     }}
-                    highlights={this.state.highlights}
+                    highlights={ this.state.highlightsFilter(this.state.highlights) }
                   />
                 )}
             </PdfLoader>
