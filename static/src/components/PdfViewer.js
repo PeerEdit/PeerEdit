@@ -17,10 +17,11 @@ import Fuse from 'fuse.js'
 
 import { Document, Page } from 'react-pdf';
 
+import Tip from './Tip';
+
 import {
   PdfLoader,
   PdfAnnotator,
-  Tip,
   Highlight,
   Popup,
   AreaHighlight
