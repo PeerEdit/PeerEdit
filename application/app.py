@@ -1,4 +1,4 @@
-from flask import request, render_template, jsonify, url_for, redirect, g
+from flask import request, render_template, jsonify, url_for, redirect, g, send_from_directory
 from .models import User
 from index import app, db
 from sqlalchemy.exc import IntegrityError
@@ -14,12 +14,14 @@ def index():
 def any_root_path(path):
     return render_template('index.html')
 
+@app.route('/api/pdf/<path:path>', methods=['GET'])
+def send_pdf(path):
+    return send_from_directory('application/assets/pdf', path)
 
 @app.route("/api/user", methods=["GET"])
 @requires_auth
 def get_user():
     return jsonify(result=g.current_user)
-
 
 @app.route("/api/create_user", methods=["POST"])
 def create_user():
