@@ -2,9 +2,12 @@
 
 import React, { Component } from "react";
 import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
+import "../types/annotator-types.js"
 
 type State = {
   compact: boolean,
@@ -94,7 +97,9 @@ class Tip extends Component<Props, State> {
                 </div>
               </div>
               <div>
-                <input type="submit" value="Save" />
+                <RaisedButton primary={true} type="submit" value="Save">
+                  Submit
+                </RaisedButton>
               </div>
             </form>
           )}
