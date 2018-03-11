@@ -30,7 +30,7 @@ import {
 import '../styles/MainPdfViewerPane.css'
 import '../styles/Spinner.css'
 
-const url = 'https://arxiv.org/pdf/1802.08228.pdf';
+const url = 'http://localhost:3000/api/pdf/leewes.pdf';
 const getNextId = () => String(Math.random()).slice(2);
 const parseIdFromHash = () => location.hash.slice("#highlight-".length);
 const resetHash = () => { location.hash = ""; };
