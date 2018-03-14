@@ -112,7 +112,7 @@ function Sidebar(props) {
   return (
     <div className="sidebar" style={{ width: "25vw" }}>
       <div className="description" style={{ padding: "1rem" }}>
-        <h2 style={{ marginBottom: "1rem" }}>annotations</h2>
+        <h2 style={{ marginBottom: "1rem" }}>PeerEdit</h2>
         <p>
           <small>
             To create area highlight hold ⌥ Option key (Alt), then click and
@@ -191,14 +191,24 @@ const fuseOptions = {
   id: 'id'
 };
 
-class PdfViewer extends React.Component {
+type Props = {};
+type State = {
+  highlights: Array<T_Highlight>,
+  highlightsFilter: (i: Array<T_Highlight>) => Array<T_Highlight>,
+  fuseInterface: T_Fuse<T_Highlight>
+};
+
+class PdfViewer extends React.Component<Props, State> {
+
+  state:State;
+
   constructor(props) {
     super(props)
     this.state = {
       highlights: [],
       highlightsFilter: showAllHighlightsFilter,
       fuseInterface: new Fuse([], fuseOptions)
-    }
+    };
 
     this.searchHighlights = this.searchHighlights.bind(this);
   }

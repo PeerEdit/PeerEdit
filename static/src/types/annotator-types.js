@@ -93,3 +93,7 @@ export type T_PDFJS = {
   getDocument: (url: string) => Promise<T_PDFJS_Document>,
   disableWorker: boolean
 };
+
+export interface T_Fuse<K> {
+  search: (s: string) => Array<K>
+}
