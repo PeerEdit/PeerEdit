@@ -30,7 +30,7 @@ import {
 import '../styles/MainPdfViewerPane.css'
 import '../styles/Spinner.css'
 
-const url = 'http://localhost:3000/api/pdf/leewes.pdf';
+const url = 'http://localhost:3000/api/pdf/pdf2.pdf';
 const getNextId = () => String(Math.random()).slice(2);
 const parseIdFromHash = () => location.hash.slice("#highlight-".length);
 const resetHash = () => { location.hash = ""; };
@@ -289,7 +289,7 @@ class PdfViewer extends React.Component {
     const { pageNumber, numPages } = this.state;
     
     return (
-      <Paper>
+      <div>
         <div className="MainPdfViewerPane" style={{ display: "flex", height: "100vh" }}>
           <Sidebar
             highlights={ this.state.highlightsFilter(this.state.highlights) }
@@ -381,7 +381,7 @@ class PdfViewer extends React.Component {
             </PdfLoader>
           </div>
         </div>
-      </Paper>
+      </div>
     )
   }
 

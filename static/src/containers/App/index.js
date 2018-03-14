@@ -19,15 +19,12 @@ class App extends React.Component { // eslint-disable-line react/prefer-stateles
         return (
             <MuiThemeProvider muiTheme={getMuiTheme()}>
                 <section>
-                    <Header />
-                    <div
-                      className="container"
-                      style={{ marginTop: 10, paddingBottom: 250 }}
-                    >
+                    { /* <Header /> */ }
+                    <div>
                         {this.props.children}
                     </div>
                     <div>
-                        <Footer />
+                        {/* <Footer /> */}
                     </div>
                 </section>
             </MuiThemeProvider>
