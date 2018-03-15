@@ -2,10 +2,9 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actionCreators from '../actions/auth';
-import { Card, CardActions, CardMedia, CardHeader } from 'material-ui/Card';
 import LinearProgress from 'material-ui/LinearProgress';
 import RaisedButton from 'material-ui/RaisedButton';
-import {CardText} from 'material-ui/Card';
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import Chip from 'material-ui/Chip';
 import Avatar from 'material-ui/Avatar';
 
@@ -16,6 +15,8 @@ import FlatButton from 'material-ui/FlatButton';
 import Fuse from 'fuse.js'
 
 import { Document, Page } from 'react-pdf';
+
+import HoverCard from './HoverCard'
 
 import Tip from './Tip';
 
@@ -126,32 +127,29 @@ function Sidebar(props) {
       <ul className="sidebar__highlights">
         {highlights.sort((a, b) => a.position.boundingRect.y1 > b.position.boundingRect.y1)
                    .map((highlight, index) => (
-          <li
-            key={highlight.id}
-            className="sidebar__highlight"
-            onClick={() => {
-              updateHash(highlight);
-            }}
-          >
-            <div>
-              <strong>{highlight.comment.text}</strong>
-              {highlight.content.text ? (
-                <blockquote style={{ marginTop: "0.5rem" }}>
-                  {`${highlight.content.text.slice(0, 90).trim()}…`}
-                </blockquote>
-              ) : null}
-              {highlight.content.image ? (
-                <div
-                  className="highlight__image"
-                  style={{ marginTop: "0.5rem" }}
-                >
-                  <img src={highlight.content.image} alt={"Screenshot"} />
-                </div>
-              ) : null}
-            </div>
-            <div className="highlight__location">
-              Page {highlight.position.pageNumber}
-            </div>
+          <li key={highlight.id} className="sidebar__highlight">
+            <HoverCard onClick={()=>{updateHash(highlight);}} className="sidebar__card">
+              <div>
+                <strong>{highlight.comment.text}</strong>
+                {highlight.content.text ? (
+                  <blockquote style={{ marginTop: "0.5rem" }}>
+                    {`${highlight.content.text.slice(0, 90).trim()}…`}
+                  </blockquote>
+                ) : null}
+                {highlight.content.image ? (
+                  <div
+                    className="highlight__image"
+                    style={{ marginTop: "0.5rem" }}
+                  >
+                    <img src={highlight.content.image} alt={"Screenshot"} />
+                  </div>
+                ) : null}
+              </div>
+              <RaisedButton backgroundColor="#AAAAAA">Reply</RaisedButton>
+              <div className="highlight__location">
+                Page {highlight.position.pageNumber}
+              </div>
+            </HoverCard>
           </li>
         ))}
       </ul>
@@ -311,7 +309,8 @@ class PdfViewer extends React.Component<Props, State> {
               height: "100vh",
               width: "75vw",
               overflowY: "scroll",
-              position: "relative"
+              position: "relative",
+              backgroundColor: "grey"
             }}
           >
             <PdfLoader url={url} beforeLoad={<Spinner />}>
