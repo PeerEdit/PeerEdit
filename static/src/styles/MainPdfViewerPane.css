@@ -36,6 +36,12 @@
   border: 1px dashed;
 }
 
+.sidebar__card {
+  padding: 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid rgb(119, 119, 119);
+}
+
 a {
   color: #d35400;
 }
