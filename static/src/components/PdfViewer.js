@@ -178,7 +178,7 @@ const updateHash = highlight => {
 const HighlightPopup = ({ comment }) =>
   comment.text ? (
     <div className="Highlight__popup">
-      {comment.emoji} {comment.text}
+      {comment.text}
     </div>
   ) : null;
 

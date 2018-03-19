@@ -38,8 +38,7 @@ export type T_NewHighlight = {
     image?: string
   },
   comment: {
-    text: string,
-    emoji: string
+    text: string
   }
 };
 

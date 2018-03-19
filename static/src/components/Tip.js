@@ -12,7 +12,6 @@ import "../types/annotator-types.js"
 type State = {
   compact: boolean,
   text: string,
-  emoji: string
 };
 
 type Props = {
@@ -25,7 +24,6 @@ class Tip extends Component<Props, State> {
   state = {
     compact: true,
     text: "",
-    emoji: ""
   };
 
   state: State;
@@ -79,22 +77,6 @@ class Tip extends Component<Props, State> {
                     }
                   }}
                 />
-                <div>
-                  {["😱", "😍", "🔥"].map(_emoji => (
-                    <label key={_emoji}>
-                      <input
-                        checked={emoji === _emoji}
-                        type="radio"
-                        name="emoji"
-                        value={_emoji}
-                        onChange={event =>
-                          this.setState({ emoji: event.target.value })
-                        }
-                      />
-                      {_emoji}
-                    </label>
-                  ))}
-                </div>
               </div>
               <div>
                 <RaisedButton primary={true} type="submit" value="Save">
