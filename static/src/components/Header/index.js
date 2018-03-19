@@ -71,10 +71,10 @@ export class Header extends Component {
                     {
                         !this.props.isAuthenticated ?
                             <div>
-                                <MenuItem onClick={() => this.dispatchNewRoute('/login')}>
+                                <MenuItem onClick={() => this.dispatchNewRoute('/gui/login')}>
                                     Login
                                 </MenuItem>
-                                <MenuItem onClick={() => this.dispatchNewRoute('/register')}>
+                                <MenuItem onClick={() => this.dispatchNewRoute('/gui/register')}>
                                     Register
                                 </MenuItem>
                             </div>
@@ -86,17 +86,17 @@ export class Header extends Component {
                                     onRightIconButtonTouchTap={() => this.closeNav()}
                                     iconElementRight={<IconButton><NavigationClose /></IconButton>}
                                 />
-                                <MenuItem onClick={() => this.dispatchNewRoute('/analytics')}>
+                                <MenuItem onClick={() => this.dispatchNewRoute('/gui/analytics')}>
                                     Analytics
                                 </MenuItem>
                                 <Divider />
 
-                                <MenuItem onClick={() => this.dispatchNewRoute('/browse')}>
+                                <MenuItem onClick={() => this.dispatchNewRoute('/gui/browse')}>
                                     Threads
                                 </MenuItem>
 
                                 <Divider />
-                                <MenuItem onClick={() => this.dispatchNewRoute('/pdfviewer')}>
+                                <MenuItem onClick={() => this.dispatchNewRoute('/viewer/pdf', '_blank')}>
                                     PdfViewer
                                 </MenuItem>
 
