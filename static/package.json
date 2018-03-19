@@ -117,8 +117,10 @@
     "yargs": "^6.5.0"
   },
   "dependencies": {
+    "@types/react-split-pane": "^0.1.67",
     "fuse.js": "^3.2.0",
     "react-pdf": "^2.5.3",
-    "react-pdf-annotator": "0.0.5"
+    "react-pdf-annotator": "0.0.5",
+    "react-split-pane": "^0.1.77"
   }
 }
