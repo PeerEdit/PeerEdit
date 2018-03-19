@@ -145,7 +145,11 @@ function Sidebar(props) {
                   </div>
                 ) : null}
               </div>
-              <RaisedButton backgroundColor="#AAAAAA">Reply</RaisedButton>
+              <CardActions>
+                <RaisedButton className="replyButton" onClick={(e) => {window.alert("reply");}}>Reply</RaisedButton>
+                <RaisedButton className="thumbsUpButton" onClick={(e) => {window.alert("+");}}>+</RaisedButton>
+                <RaisedButton className="thumbsDownButton" onClick={(e) => {window.alert("-");}}>-</RaisedButton>
+              </CardActions>
               <div className="highlight__location">
                 Page {highlight.position.pageNumber}
               </div>
