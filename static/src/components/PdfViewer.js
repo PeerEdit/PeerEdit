@@ -112,8 +112,18 @@ function Sidebar(props) {
   let resetHighlights = props.resetHighlights;
   let searchHighlights = props.searchHighlights;
 
+  const dateRenderOptions = {
+    year: 'numeric'
+    ,month: 'numeric'
+    ,day: 'numeric'
+    ,hour: 'numeric'
+    ,minute: 'numeric'
+  };
+
   return (
-    <div className="sidebar" style={{ overflowY: "scroll" }}>
+    <div className="sidebar" style={{ 
+      overflowY: "scroll"
+    }}>
       <div className="description" style={{ padding: "1rem" }}>
         <h2 style={{ marginBottom: "1rem" }}>PeerEdit</h2>
         <p>
@@ -122,15 +132,22 @@ function Sidebar(props) {
             drag.
           </small>
         </p>
+        <AnnotationSearchBar searchHighlights={searchHighlights} />
       </div>
-
-      <AnnotationSearchBar searchHighlights={searchHighlights} />
 
       <ul className="sidebar__highlights">
         {highlights.sort((a, b) => a.position.boundingRect.y1 > b.position.boundingRect.y1)
                    .map((highlight, index) => (
           <li key={highlight.id} className="sidebar__highlight">
-            <HoverCard onClick={()=>{updateHash(highlight);}} className="sidebar__card">
+            <HoverCard onClick={()=>{updateHash(highlight);}}
+                       className="sidebar__card">
+              <CardHeader
+                title="Rahul Dhodapkar"
+                avatar="../../images/default-avatar-256.png"
+                subtitle={new Date().toLocaleDateString("en-US", dateRenderOptions)}
+                actAsExpander={true}
+                showExpandableButton={true} 
+              />
               <div>
                 <strong>{highlight.comment.text}</strong>
                 {highlight.content.text ? (
@@ -148,13 +165,30 @@ function Sidebar(props) {
                 ) : null}
               </div>
               <CardActions>
-                <RaisedButton className="replyButton" onClick={(e) => {window.alert("reply");}}>Reply</RaisedButton>
                 <RaisedButton className="thumbsUpButton" onClick={(e) => {window.alert("+");}}>+</RaisedButton>
                 <RaisedButton className="thumbsDownButton" onClick={(e) => {window.alert("-");}}>-</RaisedButton>
               </CardActions>
               <div className="highlight__location">
                 Page {highlight.position.pageNumber}
               </div>
+              <CardText expandable={true} style={{
+                backgroundColor: "#CCC"
+                ,marginLeft: "5px"
+              }}>
+                <Card>
+                  <CardHeader
+                    title="Rahul Dhodapkar"
+                    avatar="../../images/default-avatar-256.png"
+                    subtitle={new Date().toLocaleDateString("en-US", dateRenderOptions)}
+                  />
+                  <CardText>
+                    This is another comment card
+                  </CardText>
+                </Card>
+              </CardText>
+              <CardActions expandable={true}>
+                <RaisedButton className="replyButton" onClick={(e) => {window.alert("reply");}}>Reply</RaisedButton>
+              </CardActions>
             </HoverCard>
           </li>
         ))}
