@@ -23,6 +23,17 @@ def send_pdf(path):
 def get_user():
     return jsonify(result=g.current_user)
 
+@app.route("/api/create_comment", methods=["POST"])
+def create_comment():
+    incoming = request.get_json()
+    comment = Comment(
+        article_id=incoming["article_id"]
+        ,slug_hash=incoming["slug_hash"]
+        ,content_text=incoming["content_text"]
+        ,position_data=incoming["position_data"]
+    )
+    db.session.add(comment)
+
 @app.route("/api/create_user", methods=["POST"])
 def create_user():
     incoming = request.get_json()
@@ -43,7 +54,6 @@ def create_user():
         id=user.id,
         token=generate_token(new_user)
     )
-
 
 @app.route("/api/get_token", methods=["POST"])
 def get_token():
