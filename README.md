@@ -134,6 +134,8 @@ $ npm start
 6. open your browser to http://localhost:3000/register and setup your first account
 7. enjoy! By this point, you should be able to create an account and login without errors. 
 
+## Attributions
 
+Some icons have been copied into this project from "flaticon" (https://www.freepik.com/flaticon)
 
 

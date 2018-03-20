@@ -12,13 +12,13 @@ import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 
-import SplitPane from 'react-split-pane'
+import SplitPane from 'react-split-pane';
 
-import Fuse from 'fuse.js'
+import Fuse from 'fuse.js';
 
 import { Document, Page } from 'react-pdf';
 
-import HoverCard from './HoverCard'
+import HighlightCard from './HighlightCard';
 
 import Tip from './Tip';
 
@@ -107,18 +107,30 @@ class AnnotationSearchBar extends React.Component {
   }
 }
 
+const updateHash = highlight => {
+  location.hash = `highlight-${highlight.id}`;
+};
+
+// functional popup component
+const HighlightPopup = ({ comment }) =>
+  comment.text ? (
+    <div className="Highlight__popup">
+      {comment.text}
+    </div>
+  ) : null;
+
+const showAllHighlightsFilter = (highlights: Array<Object>) => {
+  return highlights;
+};
+
+const showNoHighlightsFilter = (highlights: Array<Object>) => {
+  return [];
+};
+
 function Sidebar(props) {
   let highlights = props.highlights;
   let resetHighlights = props.resetHighlights;
   let searchHighlights = props.searchHighlights;
-
-  const dateRenderOptions = {
-    year: 'numeric'
-    ,month: 'numeric'
-    ,day: 'numeric'
-    ,hour: 'numeric'
-    ,minute: 'numeric'
-  };
 
   return (
     <div className="sidebar" style={{ 
@@ -139,57 +151,7 @@ function Sidebar(props) {
         {highlights.sort((a, b) => a.position.boundingRect.y1 > b.position.boundingRect.y1)
                    .map((highlight, index) => (
           <li key={highlight.id} className="sidebar__highlight">
-            <HoverCard onClick={()=>{updateHash(highlight);}}
-                       className="sidebar__card">
-              <CardHeader
-                title="Rahul Dhodapkar"
-                avatar="../../images/default-avatar-256.png"
-                subtitle={new Date().toLocaleDateString("en-US", dateRenderOptions)}
-                actAsExpander={true}
-                showExpandableButton={true} 
-              />
-              <div>
-                <strong>{highlight.comment.text}</strong>
-                {highlight.content.text ? (
-                  <blockquote style={{ marginTop: "0.5rem" }}>
-                    {`${highlight.content.text.slice(0, 90).trim()}…`}
-                  </blockquote>
-                ) : null}
-                {highlight.content.image ? (
-                  <div
-                    className="highlight__image"
-                    style={{ marginTop: "0.5rem" }}
-                  >
-                    <img src={highlight.content.image} alt={"Screenshot"} />
-                  </div>
-                ) : null}
-              </div>
-              <CardActions>
-                <RaisedButton className="thumbsUpButton" onClick={(e) => {window.alert("+");}}>+</RaisedButton>
-                <RaisedButton className="thumbsDownButton" onClick={(e) => {window.alert("-");}}>-</RaisedButton>
-              </CardActions>
-              <div className="highlight__location">
-                Page {highlight.position.pageNumber}
-              </div>
-              <CardText expandable={true} style={{
-                backgroundColor: "#CCC"
-                ,marginLeft: "5px"
-              }}>
-                <Card>
-                  <CardHeader
-                    title="Rahul Dhodapkar"
-                    avatar="../../images/default-avatar-256.png"
-                    subtitle={new Date().toLocaleDateString("en-US", dateRenderOptions)}
-                  />
-                  <CardText>
-                    This is another comment card
-                  </CardText>
-                </Card>
-              </CardText>
-              <CardActions expandable={true}>
-                <RaisedButton className="replyButton" onClick={(e) => {window.alert("reply");}}>Reply</RaisedButton>
-              </CardActions>
-            </HoverCard>
+            <HighlightCard highlight={highlight} updateHash={updateHash}/>
           </li>
         ))}
       </ul>
@@ -203,26 +165,6 @@ function Sidebar(props) {
     </div>
   );
 }
-
-const updateHash = highlight => {
-  location.hash = `highlight-${highlight.id}`;
-};
-
-// functional popup component
-const HighlightPopup = ({ comment }) =>
-  comment.text ? (
-    <div className="Highlight__popup">
-      {comment.text}
-    </div>
-  ) : null;
-
-const showAllHighlightsFilter = (highlights: Array<Object>) => {
-  return highlights;
-};
-
-const showNoHighlightsFilter = (highlights: Array<Object>) => {
-  return [];
-};
 
 const fuseOptions = {
   keys: ['comment.text'],
@@ -339,8 +281,8 @@ class PdfViewer extends React.Component<Props, State> {
     return (
       <SplitPane allowResize={true}
                  split="vertical"
-                 minSize={200}
-                 defaultSize={300}
+                 minSize={350}
+                 defaultSize={350}
                  primary="first"
                  style={{ height: "100vh", overflow: "auto"}}
                  resizerStyle={{ "background": "#000", "padding": "2px", "cursor": "col-resize"}}>
