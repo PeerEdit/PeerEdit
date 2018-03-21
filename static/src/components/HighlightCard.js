@@ -28,30 +28,57 @@ const thumbsUpHoverColor="#8AA62F";
 const thumbsDownColor="#c91616";
 const thumbsDownHoverColor="#910f0f";
 
-function ReplyForm(props) {
-  let postReply = props.postReply;
-  return (
-    <Paper style={{padding: "8px"}}>
-      <form
-        onSubmit={event => {
-          event.preventDefault();
-          postReply();
-        }}
-      >
-        <TextField
-          fullWidth={true}
-          hintText="Type reply here"
-          multiLine={true}
-        />
-        <FlatButton type="submit" 
-                    value="Submit"
-                    backgroundColor={replyColor}
-                    hoverColor={replyHoverColor} >
-          Submit
-        </FlatButton>
-      </form>
-    </Paper>
-  )
+class ReplyForm extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      text: ""
+    };
+    this.postReply = props.postReply;
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({
+      text: event.target.value
+    });
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    this.postReply({
+      "ts": new Date()
+      , "text": this.state.text
+    });
+    this.setState({
+      "text": ""
+    })
+  }
+
+  render() {
+    return (
+      <Paper style={{padding: "8px"}}>
+        <form onSubmit={this.handleSubmit}>
+          <TextField
+            fullWidth={true}
+            hintText="Type reply here"
+            multiLine={true}
+            onChange={this.handleChange}
+          />
+          <FlatButton type="submit" 
+                      value="Submit"
+                      backgroundColor={replyColor}
+                      hoverColor={replyHoverColor} >
+            Submit
+          </FlatButton>
+        </form>
+      </Paper>
+    );
+  }
 }
 
 class HighlightCard extends React.Component {
@@ -66,6 +93,7 @@ class HighlightCard extends React.Component {
     this.postReply = props.postReply;
     this.highlight = props.highlight;
     this.updateHash = props.updateHash;
+    this.highlight = props.highlight;
   }
 
   toggleReplyState = () => {
@@ -112,7 +140,6 @@ class HighlightCard extends React.Component {
                         hoverColor={
                           this.state.replyExposed ? replyOpenHoverColor : replyHoverColor
                         }
-                        textColor="#FFF" 
                         onClick={(e) => {this.toggleReplyState();}}>
               { this.state.replyExposed ? "Close Reply" : "Reply" }
             </FlatButton>
@@ -131,25 +158,30 @@ class HighlightCard extends React.Component {
                         icon={<img src='../../images/thumbs-down.png' alt="-" />}
             />
           </CardActions>
-          { this.state.replyExposed ? <ReplyForm postReply={this.postReply} /> : null}
+          { this.state.replyExposed ? <ReplyForm postReply={(reply) => {
+              this.toggleReplyState();
+              this.postReply(reply);
+          }} /> : null}
           <div className="highlight__location">
             Page {this.highlight.position.pageNumber}
           </div>
         </div>
-        <CardHeader 
-          actAsExpander={true}
-          showExpandableButton={true} 
-          subtitle="3 replies"
-        />
+        {this.highlight.replies ? 
+          (<CardHeader 
+            actAsExpander={true}
+            showExpandableButton={true} 
+            subtitle={`${this.highlight.replies.length} replies`}
+          />) : null}
         <CardText expandable={true} style={{
           padding: "0px"
           , paddingLeft: "25px"
           ,backgroundColor: "#CCC"
         }}>
-            { [1,2,3].map((val, ix) => {
-                return (<HighlightReplyCard />);
-              }) 
-            }
+          { this.highlight.replies ? this.highlight.replies.map((val, ix) => {
+              return (<HighlightReplyCard key={ix} 
+                                          text={val.text}
+                                          ts={val.ts} />);
+            }) : null }
         </CardText>
       </Card>
     )

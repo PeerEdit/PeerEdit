@@ -21,6 +21,9 @@ const thumbsDownHoverColor="#910f0f";
 class HighlightReplyCard extends React.Component {
   constructor(props) {
     super(props);
+
+    this.ts = props.ts;
+    this.text = props.text;
   }
 
   render() {
@@ -29,10 +32,10 @@ class HighlightReplyCard extends React.Component {
         <CardHeader
           title="Rahul Dhodapkar"
           avatar="../../images/default-avatar-256.png"
-          subtitle={new Date().toLocaleDateString("en-US", dateRenderOptions)}
+          subtitle={this.ts.toLocaleDateString("en-US", dateRenderOptions)}
         />
         <CardText>
-          This is another comment card
+          {this.text}
         </CardText>
         <CardActions>
           <FlatButton className="thumbsUpButton" 

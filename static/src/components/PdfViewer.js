@@ -131,6 +131,7 @@ function Sidebar(props) {
   let highlights = props.highlights;
   let resetHighlights = props.resetHighlights;
   let searchHighlights = props.searchHighlights;
+  let postReplyGenerator = props.postReplyGenerator;
 
   return (
     <div className="sidebar" style={{ 
@@ -151,7 +152,9 @@ function Sidebar(props) {
         {highlights.sort((a, b) => a.position.boundingRect.y1 > b.position.boundingRect.y1)
                    .map((highlight, index) => (
           <li key={highlight.id} className="sidebar__highlight">
-            <HighlightCard highlight={highlight} updateHash={updateHash}/>
+            <HighlightCard highlight={highlight} 
+                           updateHash={updateHash}
+                           postReply={postReplyGenerator(highlight)} />
           </li>
         ))}
       </ul>
@@ -241,6 +244,26 @@ class PdfViewer extends React.Component<Props, State> {
     });
   }
 
+  postReplyGenerator = (highlight: T_Highlight) => {
+    return (reply) => {
+      console.log(`writing reply for ${highlight}`);
+      this.setState( (prevState, props) => {
+        let nxtHighlights = prevState.highlights.map((h) => {
+          if (h.id == highlight.id) {
+            if ('replies' in h) {
+              h.replies.push(reply);
+            }
+            else{
+              h.replies = [reply];
+            }
+          }
+          return h
+        });
+        return { highlights: nxtHighlights };
+      })
+    };
+  };
+
   updateHighlight(highlightId: string, position: Object, content: Object) {
     console.log("Updating highlight", highlightId, position, content);
 
@@ -290,6 +313,7 @@ class PdfViewer extends React.Component<Props, State> {
           highlights={ this.state.highlightsFilter(this.state.highlights) }
           resetHighlights={ this.resetHighlights }
           searchHighlights={ this.searchHighlights }
+          postReplyGenerator={ this.postReplyGenerator }
         />
         <div
           style={{
