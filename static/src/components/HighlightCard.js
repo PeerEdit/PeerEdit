@@ -87,7 +87,8 @@ class HighlightCard extends React.Component {
     super(props);
 
     this.state = {
-      replyExposed: false
+      replyExposed: false,
+      replyExpanded: false
     }
 
     this.postReply = props.postReply;
@@ -104,12 +105,22 @@ class HighlightCard extends React.Component {
     })
   }
 
+  toggleExpandState = () => {
+    this.setState((prev, props) => {
+      return {
+        replyExpanded: !prev.replyExpanded
+      };
+    })
+  }
+
   render() {
     return (
       <Card onClick={()=>{this.updateHash(this.highlight);}} 
             style={{
-        padding: "0px"
-      }} style={{cursor: "pointer"}}>
+              padding: "0px"
+            }}
+            onExpandChange={(e) => {this.toggleExpandState();}}
+            expanded={this.state.replyExpanded} >
         <div className="sidebar__card">
           <CardHeader
             title={<a href="http://www.google.com" target="_blank">Rahul Dhodapkar</a>}
@@ -160,6 +171,7 @@ class HighlightCard extends React.Component {
           </CardActions>
           { this.state.replyExposed ? <ReplyForm postReply={(reply) => {
               this.toggleReplyState();
+              this.setState({replyExpanded: true});
               this.postReply(reply);
           }} /> : null}
           <div className="highlight__location">
@@ -169,10 +181,11 @@ class HighlightCard extends React.Component {
         {this.highlight.replies ? 
           (<CardHeader 
             actAsExpander={true}
-            showExpandableButton={true} 
+            showExpandableButton={true}
             subtitle={`${this.highlight.replies.length} replies`}
           />) : null}
-        <CardText expandable={true} style={{
+        <CardText expandable={true}
+                  style={{
           padding: "0px"
           , paddingLeft: "25px"
           ,backgroundColor: "#CCC"
