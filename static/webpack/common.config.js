@@ -59,11 +59,14 @@ const common = {
             loaders: ['babel-loader'],
             exclude: /node_modules/,
         }, {
-            test: /\.png$/,
-            loader: 'file?name=[name].[ext]',
+            test: /\.(png|gif|jpe?g|svg)$/i,
+            loader: 'file-loader'
         }, {
-            test: /\.jpg$/,
-            loader: 'file?name=[name].[ext]',
+            test: /\.scss$/,
+            loader: 'sass-loader',
+        }, {
+            test: /\.css$/,
+            loaders: ['style-loader', 'css-loader']
         }],
     },
 
