@@ -10,6 +10,13 @@ class User():
     db_name = "peeredit"
     coll_name = "user"
 
+    """ Rough Schema
+    {
+        email: String
+        password: String # salted, hashed password
+    }
+    """
+
     @classmethod
     def create_new_user(cls, userobj):
         """ Create new user, raises exception on failure """
@@ -35,3 +42,47 @@ class User():
             return user
         else:
             return None
+
+class Comment():
+
+    db_name = "peeredit"
+    coll_name = "comment"
+
+    """ Rough Schema
+    {
+        _id: String, # slug extension
+        articleId: ObjectId(),
+        content: {
+            text: String
+        },
+        position {
+            boundingRect: {
+                x1: Number,
+                y1: Number,
+                x2: Number,
+                y2: Number,
+                width: Number,
+                height: Number
+            },
+            rects: [ 
+                {
+                    x1: Number,
+                    y1: Number,
+                    x2: Number,
+                    y2: Number,
+                    width: Number,
+                    height: Number
+                } 
+            ],
+            pageNumber: Number
+        },
+        comment: {
+            text: String
+        }
+    }
+    """
+
+    @classmethod
+    def create_new_comment(cls, comment):
+        return client[cls.db_name][cls.coll_name].insert_one(comment)
+
