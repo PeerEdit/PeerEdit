@@ -70,7 +70,7 @@ export function loginUser(email, password) {
             .then(response => {
                 try {
                     dispatch(loginUserSuccess(response.token));
-                    browserHistory.push('/main');
+                    browserHistory.push('/gui/main');
                 } catch (e) {
                     alert(e);
                     dispatch(loginUserFailure({
@@ -128,7 +128,7 @@ export function registerUser(email, password) {
             .then(response => {
                 try {
                     dispatch(registerUserSuccess(response.token));
-                    browserHistory.push('/main');
+                    browserHistory.push('/gui/main');
                 } catch (e) {
                     dispatch(registerUserFailure({
                         response: {
