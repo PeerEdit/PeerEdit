@@ -1,6 +1,9 @@
 from index import client, bcrypt
 from datetime import datetime
 
+from urllib.request import urlopen
+from xxhash import xxh64
+
 """ Rough Schema
 {
     email: String
@@ -83,10 +86,8 @@ class Comment():
 
 """ Rough Schema
 {
-    _id: ObjectId(),
-    hash: String,
+    _id: int, # hash of binary data
     links: [
-        {
             url: String,
             lastValidated: Date(),
             reporter: {
@@ -94,7 +95,7 @@ class Comment():
                 , email: String
             } 
         }
-    ],
+    ]
 }
 """
 class Article():
@@ -102,15 +103,81 @@ class Article():
     db_name = "peeredit"
     coll_name = "article"
 
+    # way to bound maximum work done during hashing
+    # will only parse first ~2MB of data in file.
+    max_chunks_for_hash = 32
+
+    @classmethod 
+    def hashurl(cls, url):
+        # hash binary
+        i = 0
+        x = xxh64()
+        CHUNK = 64 * 1024
+        with urlopen(url) as f:
+            while not f.closed and i < cls.max_chunks_for_hash:
+                i = i + 1
+                chunk = f.read(CHUNK)
+                if chunk == b'':
+                    break
+                x.update(f.read(CHUNK))
+
+        # force representation by 64 bit signed int.
+        # this halves the power of the hashing function
+        return int(x.intdigest()/2)
+
+    # TODO: add network exception handling / retry logic
     @classmethod
-    def index_new_article(cls, article):
+    def index_new_article(cls, article, reporter):
         """ Index a new article, hash, and store """
-        pass
+        hashval = cls.hashurl(article['url'])
+
+        # persist data
+        with client.start_session(causal_consistency=True) as session:
+            try:
+                doc = client[cls.db_name][cls.coll_name].find_one({"_id": hashval})
+                if not doc:
+                    return client[cls.db_name][cls.coll_name].insert_one(
+                        {
+                            "_id": hashval,
+                            "links": [
+                                {
+                                    "url": article["url"]
+                                    , "lastValidated": datetime.now()
+                                    , "reporter": {
+                                        "_id": reporter["_id"]
+                                        , "email": reporter["email"]
+                                    }
+                                }
+                            ]
+                        }
+                    )
+                elif not article["url"] in [x["url"] for x in doc["links"]]:
+                    return client[cls.db_name][cls.coll_name].update_one(
+                        {"_id": hashval}
+                        , {"$addToSet" : {"links": {
+                            "url": article["url"]
+                            , "lastValidated": datetime.now()
+                            , "reporter": {
+                                "_id": reporter["_id"]
+                                , "email": reporter["email"]
+                            }
+                        }}}
+                    )
+                else: # if link has already been reported, do nothing.
+                    pass
+            except Exception as e:
+                raise e
+            return None
 
     @classmethod
-    def get_article_with_id(cls, idx):
+    def get_article_with_data(cls, url):
+        hashval = cls.hashurl(url)
+        return cls.get_article_with_id(hashval)
+
+    @classmethod
+    def get_article_with_id(cls, hashval):
         """ Get article by id """
-        return client[cls.db_name][cls.coll_name].find_one({"_id": idx})
+        return client[cls.db_name][cls.coll_name].find_one({"_id": hashval})
 
 
 
