@@ -123,8 +123,8 @@
 <p id="t10" class="stm run hide_run"><span class="key">def</span> <span class="nam">generate_token</span><span class="op">(</span><span class="nam">user</span><span class="op">,</span> <span class="nam">expiration</span><span class="op">=</span><span class="nam">TWO_WEEKS</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t11" class="stm run hide_run">    <span class="nam">s</span> <span class="op">=</span> <span class="nam">Serializer</span><span class="op">(</span><span class="nam">app</span><span class="op">.</span><span class="nam">config</span><span class="op">[</span><span class="str">'SECRET_KEY'</span><span class="op">]</span><span class="op">,</span> <span class="nam">expires_in</span><span class="op">=</span><span class="nam">expiration</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t12" class="stm run hide_run">    <span class="nam">token</span> <span class="op">=</span> <span class="nam">s</span><span class="op">.</span><span class="nam">dumps</span><span class="op">(</span><span class="op">{</span><span class="strut">&nbsp;</span></p>
-<p id="t13" class="pln">        <span class="str">'id'</span><span class="op">:</span> <span class="nam">user</span><span class="op">.</span><span class="nam">id</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
-<p id="t14" class="pln">        <span class="str">'email'</span><span class="op">:</span> <span class="nam">user</span><span class="op">.</span><span class="nam">email</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
+<p id="t13" class="pln">        <span class="str">'id'</span><span class="op">:</span> <span class="nam">str</span><span class="op">(</span><span class="nam">user</span><span class="op">[</span><span class="str">'_id'</span><span class="op">]</span><span class="op">)</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
+<p id="t14" class="pln">        <span class="str">'email'</span><span class="op">:</span> <span class="nam">user</span><span class="op">[</span><span class="str">'email'</span><span class="op">]</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
 <p id="t15" class="pln">    <span class="op">}</span><span class="op">)</span><span class="op">.</span><span class="nam">decode</span><span class="op">(</span><span class="str">'utf-8'</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t16" class="stm run hide_run">    <span class="key">return</span> <span class="nam">token</span><span class="strut">&nbsp;</span></p>
 <p id="t17" class="pln"><span class="strut">&nbsp;</span></p>
@@ -162,7 +162,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.2</a>,
-            created at 2018-03-31 15:48
+            created at 2018-03-31 17:20
         </p>
     </div>
 </div>

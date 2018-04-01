@@ -1,9 +1,8 @@
 from flask import request, render_template, jsonify, url_for, redirect, g, send_from_directory
 from .models import User
-from index import app, db
+from index import app, client
 from sqlalchemy.exc import IntegrityError
 from .utils.auth import generate_token, requires_auth, verify_token
-
 
 @app.route('/', methods=['GET'])
 def index():
@@ -37,23 +36,25 @@ def create_comment():
 @app.route("/api/create_user", methods=["POST"])
 def create_user():
     incoming = request.get_json()
-    user = User(
-        email=incoming["email"],
-        password=incoming["password"]
-    )
-    db.session.add(user)
 
-    try:
-        db.session.commit()
-    except IntegrityError:
-        return jsonify(message="User with that email already exists"), 409
+    with client.start_session(causal_consistency=True) as session:
+        try:
+            User.create_new_user({
+                "email": incoming["email"]
+                ,"password": incoming["password"]
+            })
 
-    new_user = User.query.filter_by(email=incoming["email"]).first()
+            new_user = User.get_user_with_email(email=incoming["email"])
 
-    return jsonify(
-        id=user.id,
-        token=generate_token(new_user)
-    )
+            return jsonify(
+                id=str(new_user['_id']),
+                token=generate_token(new_user)
+            )
+
+        # TODO: add additional error handling here.
+        except Exception as e:
+            print(e)
+            return jsonify(message="User with that email already exists"), 409
 
 @app.route("/api/get_token", methods=["POST"])
 def get_token():

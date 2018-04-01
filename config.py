@@ -7,6 +7,7 @@ class BaseConfig(object):
     SECRET_KEY = "SO_SECURE"
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+    MONGODB_DATABASE_URI = os.environ['DATABASE_URL']
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 
@@ -16,5 +17,6 @@ class TestingConfig(object):
     DEBUG = True
     WTF_CSRF_ENABLED = False
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    MONGODB_DATABASE_URI = 'mongodb://127.0.0.1/'
     DEBUG_TB_ENABLED = True
     PRESERVE_CONTEXT_ON_EXCEPTION = False

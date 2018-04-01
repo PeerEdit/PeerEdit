@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
+
 from testing_config import BaseTestConfig
 from application.models import User
 import json
 from application.utils import auth
-
+from index import bcrypt
 
 class TestAPI(BaseTestConfig):
     some_user = {
@@ -15,9 +17,9 @@ class TestAPI(BaseTestConfig):
         self.assertIn('<html>', result.data.decode("utf-8"))
 
     def test_create_new_user(self):
-        self.assertIsNone(User.query.filter_by(
-                email=self.some_user["email"]
-        ).first())
+        self.assertIsNone(User.get_user_with_email(
+            self.some_user["email"]
+        ))
 
         res = self.app.post(
                 "/api/create_user",
@@ -26,7 +28,8 @@ class TestAPI(BaseTestConfig):
         )
         self.assertEqual(res.status_code, 200)
         self.assertTrue(json.loads(res.data.decode("utf-8"))["token"])
-        self.assertEqual(User.query.filter_by(email=self.some_user["email"]).first().email, self.some_user["email"])
+        self.assertEqual(User.get_user_with_email(self.some_user["email"])["email"],
+                        self.some_user["email"])
 
         res2 = self.app.post(
                 "/api/create_user",
