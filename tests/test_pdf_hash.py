@@ -43,10 +43,13 @@ class TestPDFHash(BaseTestConfig):
             , "email": "rahul@test.com"
         })
 
-        r5 = Article.get_article_with_id(article_id)
+        article = Article.get_article_with_id(article_id)
+
+        self.assertTrue(article['kExt'] == "pdf")
+        self.assertTrue(article['kMIME'] == "application/pdf")
 
         # both articles have been hashed to the same location
-        self.assertTrue(len(r5['links']) == 2)
+        self.assertTrue(len(article['links']) == 2)
 
 """ Speed tests commented out until perf testing
     def test_speed_upload_new_article(self):

@@ -3,6 +3,7 @@ from datetime import datetime
 
 from urllib.request import urlopen
 from xxhash import xxh64
+from filetype import filetype
 
 """ Rough Schema
 {
@@ -87,6 +88,8 @@ class Comment():
 """ Rough Schema
 {
     _id: int, # hash of binary data
+    kExt: String,
+    kMIME: String,
     links: [
             url: String,
             lastValidated: Date(),
@@ -125,32 +128,44 @@ class Article():
         # this halves the power of the hashing function
         return int(x.intdigest()/2)
 
+    # see https://pypi.python.org/pypi/filetype#file-header
+    # for rationale behind requiring only first 261 bytes
+    @classmethod
+    def get_filetype(cls, url):
+        with urlopen(url) as f:
+            return filetype.guess(f.read(261))
+
     # TODO: add network exception handling / retry logic
     @classmethod
     def index_new_article(cls, article, reporter):
         """ Index a new article, hash, and store """
         hashval = cls.hashurl(article['url'])
+        guessed_type = cls.get_filetype(article['url'])
 
         # persist data
         with client.start_session(causal_consistency=True) as session:
             try:
                 doc = client[cls.db_name][cls.coll_name].find_one({"_id": hashval})
                 if not doc:
-                    return client[cls.db_name][cls.coll_name].insert_one(
-                        {
-                            "_id": hashval,
-                            "links": [
-                                {
-                                    "url": article["url"]
-                                    , "lastValidated": datetime.now()
-                                    , "reporter": {
-                                        "_id": reporter["_id"]
-                                        , "email": reporter["email"]
-                                    }
+
+                    obj = {
+                        "_id": hashval,
+                        "links": [
+                            {
+                                "url": article["url"]
+                                , "lastValidated": datetime.now()
+                                , "reporter": {
+                                    "_id": reporter["_id"]
+                                    , "email": reporter["email"]
                                 }
-                            ]
-                        }
-                    )
+                            }
+                        ]
+                    }
+                    if guessed_type is not None:
+                        obj['kExt'] = guessed_type.extension
+                        obj['kMIME'] = guessed_type.mime
+                    return client[cls.db_name][cls.coll_name].insert_one(obj)
+
                 elif not article["url"] in [x["url"] for x in doc["links"]]:
                     return client[cls.db_name][cls.coll_name].update_one(
                         {"_id": hashval}
