@@ -30,7 +30,6 @@ class TestPDFHash(BaseTestConfig):
                 "_id": 15
                 , "email": "rahul@test.com"
             })
-        
 
         r3 = Article.get_article_with_id(article_id)
 
@@ -49,6 +48,7 @@ class TestPDFHash(BaseTestConfig):
         # both articles have been hashed to the same location
         self.assertTrue(len(r5['links']) == 2)
 
+""" Speed tests commented out until perf testing
     def test_speed_upload_new_article(self):
 
         t1 = datetime.now()
@@ -78,5 +78,5 @@ class TestPDFHash(BaseTestConfig):
         print("%d seconds taken" % (t2 - t1).total_seconds())
 
         self.assertTrue( (t2 - t1).total_seconds() < 10)
-
+"""
 
