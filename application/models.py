@@ -4,6 +4,9 @@ from datetime import datetime
 from urllib.request import urlopen
 from xxhash import xxh64
 from filetype import filetype
+import traceback
+
+import sys
 
 """ Rough Schema
 {
@@ -138,6 +141,11 @@ class Resource():
     # TODO: add network exception handling / retry logic
     @classmethod
     def index_new_resource(cls, resource, reporter):
+        if not "id" in reporter:
+            raise ValueError("no id passed to index_new_resource")
+        if not "email" in reporter:
+            raise ValueError("no email passed to index_new_resource")
+
         """ Index a new resource, hash, and store """
         hashval = cls.hashurl(resource['url'])
         guessed_type = cls.get_filetype(resource['url'])
@@ -155,7 +163,7 @@ class Resource():
                                 "url": resource["url"]
                                 , "lastValidated": datetime.now()
                                 , "reporter": {
-                                    "_id": reporter["_id"]
+                                    "id": reporter["id"]
                                     , "email": reporter["email"]
                                 }
                             }
@@ -164,25 +172,27 @@ class Resource():
                     if guessed_type is not None:
                         obj['kExt'] = guessed_type.extension
                         obj['kMIME'] = guessed_type.mime
-                    return client[cls.db_name][cls.coll_name].insert_one(obj)
+                    res = client[cls.db_name][cls.coll_name].insert_one(obj)
 
                 elif not resource["url"] in [x["url"] for x in doc["links"]]:
-                    return client[cls.db_name][cls.coll_name].update_one(
+                    res = client[cls.db_name][cls.coll_name].update_one(
                         {"_id": hashval}
                         , {"$addToSet" : {"links": {
                             "url": resource["url"]
                             , "lastValidated": datetime.now()
                             , "reporter": {
-                                "_id": reporter["_id"]
+                                "id": reporter["id"]
                                 , "email": reporter["email"]
                             }
                         }}}
                     )
                 else: # if link has already been reported, do nothing.
                     pass
-            except Exception as e:
-                raise e
-            return None
+            except:
+                print("Unexpected error:", sys.exc_info()[0])
+                raise
+            else:
+                return cls.get_resource_with_id(hashval)
 
     @classmethod
     def get_resource_with_data(cls, url):

@@ -89,3 +89,17 @@ class TestAPI(BaseTestConfig):
         self.assertEqual(response2.status_code, 401)
         response3 = self.app.get('/api/user', headers=bad_headers)
         self.assertEqual(response3.status_code, 401)
+
+    def test_index_resource(self):
+        headers = {
+            'Authorization': self.token,
+        }
+
+        res = self.app.post(
+                "/api/index_new_resource",
+                data=json.dumps({"url": "http://localhost:5000/api/pdf/pdf2.pdf"}),
+                content_type='application/json',
+                headers=headers
+            )
+        print("=== {}".format(res.response))
+        self.assertTrue(res.status_code == 200)

@@ -1,5 +1,5 @@
 from flask import request, render_template, jsonify, url_for, redirect, g, send_from_directory
-from .models import User
+from .models import User, Resource
 from index import app, client
 from sqlalchemy.exc import IntegrityError
 from .utils.auth import generate_token, requires_auth, verify_token
@@ -32,6 +32,34 @@ def create_comment():
         ,position_data=incoming["position_data"]
     )
     db.session.add(comment)
+
+@app.route("/api/get_resource_from_hash/<hashval>", methods=["GET"])
+def get_hash(hashval):
+
+    with client.start_session(causal_consistency=True) as session:
+        try:
+            return jsonify(Resource.get_resource_with_id(hashval))
+        except Exception as e:
+            print(e)
+            return jsonify(message="Could not find resource with that hash"), 404
+
+@app.route("/api/index_new_resource", methods=["POST"])
+@requires_auth
+def create_new_resource():
+    incoming = request.get_json()
+
+    with client.start_session(causal_consistency=True) as session:
+        print(g.current_user)
+        try:
+            Resource.index_new_resource({
+                        "url": incoming["url"]
+                    }, g.current_user)
+        # TODO: add additional error handling here.
+        except Exception as e:
+            print(e)
+            return jsonify(message="Resource already exists and is indexed"), 409
+        else:
+            return jsonify(ok=1)
 
 @app.route("/api/create_user", methods=["POST"])
 def create_user():

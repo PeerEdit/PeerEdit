@@ -16,18 +16,18 @@ class TestPDFHash(BaseTestConfig):
         r1 = Resource.index_new_resource({
                 "url": "http://localhost:5000/api/pdf/leewes.pdf"
             }, {
-                "_id": 15
+                "id": 15
                 , "email": "rahul@test.com"
             })
 
         print(r1)
         self.assertTrue(r1)
-        article_id = r1.inserted_id
+        article_id = r1['_id']
 
         r2 = Resource.index_new_resource({
                 "url": "http://localhost:5000/api/pdf/leewes_dup.pdf"
             }, {
-                "_id": 15
+                "id": 15
                 , "email": "rahul@test.com"
             })
 
@@ -39,7 +39,7 @@ class TestPDFHash(BaseTestConfig):
         r4 = Resource.index_new_resource({
             "url": "http://localhost:5000/api/pdf/pdf2.pdf"
         }, {
-            "_id": 15
+            "id": 15
             , "email": "rahul@test.com"
         })
 
