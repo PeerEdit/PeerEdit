@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from testing_config import BaseTestConfig
-from application.models import Article
+from application.models import Resource
 import json
 from application.utils import auth
 from index import bcrypt
@@ -13,7 +13,7 @@ class TestPDFHash(BaseTestConfig):
 
     def test_upload_new_article(self):
 
-        r1 = Article.index_new_article({
+        r1 = Resource.index_new_resource({
                 "url": "http://localhost:5000/api/pdf/leewes.pdf"
             }, {
                 "_id": 15
@@ -24,26 +24,26 @@ class TestPDFHash(BaseTestConfig):
         self.assertTrue(r1)
         article_id = r1.inserted_id
 
-        r2 = Article.index_new_article({
+        r2 = Resource.index_new_resource({
                 "url": "http://localhost:5000/api/pdf/leewes_dup.pdf"
             }, {
                 "_id": 15
                 , "email": "rahul@test.com"
             })
 
-        r3 = Article.get_article_with_id(article_id)
+        r3 = Resource.get_resource_with_id(article_id)
 
         # both articles have been hashed to the same location
         self.assertTrue(len(r3['links']) == 2)
 
-        r4 = Article.index_new_article({
+        r4 = Resource.index_new_resource({
             "url": "http://localhost:5000/api/pdf/pdf2.pdf"
         }, {
             "_id": 15
             , "email": "rahul@test.com"
         })
 
-        article = Article.get_article_with_id(article_id)
+        article = Resource.get_resource_with_id(article_id)
 
         self.assertTrue(article['kExt'] == "pdf")
         self.assertTrue(article['kMIME'] == "application/pdf")

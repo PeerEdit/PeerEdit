@@ -101,10 +101,10 @@ class Comment():
     ]
 }
 """
-class Article():
+class Resource():
 
     db_name = "peeredit"
-    coll_name = "article"
+    coll_name = "resource"
 
     # way to bound maximum work done during hashing
     # will only parse first ~2MB of data in file.
@@ -137,10 +137,10 @@ class Article():
 
     # TODO: add network exception handling / retry logic
     @classmethod
-    def index_new_article(cls, article, reporter):
-        """ Index a new article, hash, and store """
-        hashval = cls.hashurl(article['url'])
-        guessed_type = cls.get_filetype(article['url'])
+    def index_new_resource(cls, resource, reporter):
+        """ Index a new resource, hash, and store """
+        hashval = cls.hashurl(resource['url'])
+        guessed_type = cls.get_filetype(resource['url'])
 
         # persist data
         with client.start_session(causal_consistency=True) as session:
@@ -152,7 +152,7 @@ class Article():
                         "_id": hashval,
                         "links": [
                             {
-                                "url": article["url"]
+                                "url": resource["url"]
                                 , "lastValidated": datetime.now()
                                 , "reporter": {
                                     "_id": reporter["_id"]
@@ -166,11 +166,11 @@ class Article():
                         obj['kMIME'] = guessed_type.mime
                     return client[cls.db_name][cls.coll_name].insert_one(obj)
 
-                elif not article["url"] in [x["url"] for x in doc["links"]]:
+                elif not resource["url"] in [x["url"] for x in doc["links"]]:
                     return client[cls.db_name][cls.coll_name].update_one(
                         {"_id": hashval}
                         , {"$addToSet" : {"links": {
-                            "url": article["url"]
+                            "url": resource["url"]
                             , "lastValidated": datetime.now()
                             , "reporter": {
                                 "_id": reporter["_id"]
@@ -185,12 +185,12 @@ class Article():
             return None
 
     @classmethod
-    def get_article_with_data(cls, url):
+    def get_resource_with_data(cls, url):
         hashval = cls.hashurl(url)
         return cls.get_article_with_id(hashval)
 
     @classmethod
-    def get_article_with_id(cls, hashval):
+    def get_resource_with_id(cls, hashval):
         """ Get article by id """
         return client[cls.db_name][cls.coll_name].find_one({"_id": hashval})
 
