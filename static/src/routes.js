@@ -6,7 +6,9 @@ import { Route } from 'react-router';
 /* containers */
 import { App } from './containers/App';
 import { Viewer } from "./containers/Viewer"
+import { Uploader } from './containers/Uploader';
 import { HomeContainer } from './containers/HomeContainer';
+
 import LoginView from './components/LoginView';
 import RegisterView from './components/RegisterView';
 import ProtectedView from './components/ProtectedView';
@@ -29,9 +31,8 @@ export default (
             <Route path="analytics" component={requireAuthentication(Analytics)} />
             <Route path="browse" component={requireAuthentication(Threads)} />
         </Route>
-        <Route path="viewer/" component={Viewer}>
-            <Route path="pdf" component={PdfViewer} />
-        </Route>
+        <Route path="viewer/:assetId" component={Viewer} />
+        <Route path="upload" component={Uploader} />
         <Route path="*" component={DetermineAuth(NotFound)} />
     </Route>
 );

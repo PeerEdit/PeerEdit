@@ -30,8 +30,8 @@ import {
   AreaHighlight
 } from "react-pdf-annotator";
 
-import '../styles/MainPdfViewerPane.css'
-import '../styles/Spinner.css'
+import '../styles/MainPdfViewerPane.scss'
+import '../styles/Spinner.scss'
 
 const url = 'http://localhost:3000/api/pdf/pdf2.pdf';
 const getNextId = () => String(Math.random()).slice(2);

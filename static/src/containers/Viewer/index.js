@@ -16,7 +16,7 @@ class Viewer extends React.Component { // eslint-disable-line react/prefer-state
             <MuiThemeProvider muiTheme={getMuiTheme()}>
                 <section>
                     <div>
-                        {this.props.children}
+                        Looking for asset { this.props.routeParams.assetId }.
                     </div>
                 </section>
             </MuiThemeProvider>

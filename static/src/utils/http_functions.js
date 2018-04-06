@@ -42,3 +42,14 @@ export function has_github_token(token) {
 export function data_about_user(token) {
     return axios.get('/api/user', tokenConfig(token));
 }
+
+export function get_resource_metadata(hashval) {
+    return axios.get(`get_resource_from_hash/${hashval}`);
+}
+
+export function index_resource(token, url) {
+    return axios.post("/api/index_new_resource", {
+            ...tokenConfig(token),
+            url
+        });
+}
