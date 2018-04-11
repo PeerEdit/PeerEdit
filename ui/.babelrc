@@ -1,0 +1,9 @@
+{
+  "presets": ["react", "env"],
+  "plugins": [],
+  "env": {
+    "start": {
+      "presets": ["react-hmre"]
+    }
+  }
+}
