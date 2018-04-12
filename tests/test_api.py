@@ -12,10 +12,6 @@ class TestAPI(BaseTestConfig):
         "password": "something1"
     }
 
-    def test_get_spa_from_index(self):
-        result = self.app.get("/")
-        self.assertIn('<html>', result.data.decode("utf-8"))
-
     def test_create_new_user(self):
         self.assertIsNone(User.get_user_with_email(
             self.some_user["email"]

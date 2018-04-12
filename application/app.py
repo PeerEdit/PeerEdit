@@ -51,7 +51,7 @@ def create_new_resource():
     with client.start_session(causal_consistency=True) as session:
         print(g.current_user)
         try:
-            Resource.index_new_resource({
+            resource = Resource.index_new_resource({
                         "url": incoming["url"]
                     }, g.current_user)
         # TODO: add additional error handling here.
@@ -59,7 +59,7 @@ def create_new_resource():
             print(e)
             return jsonify(message="Resource already exists and is indexed"), 409
         else:
-            return jsonify(ok=1)
+            return jsonify(resource)
 
 @app.route("/api/create_user", methods=["POST"])
 def create_user():
