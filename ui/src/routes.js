@@ -2,27 +2,16 @@
 
 import React from 'react';
 import { Route } from 'react-router';
+import { MainNavigation } from './containers/MainNavigation';
 
-/* containers */
-function App(props) {
-    return (
-        <div>
-            <h1>Wrapper</h1>
-            {props.children}
-        </div>
-    );
-}
-
-function Main(props) {
-    return (
-        <div>
-            <h1>Main Page</h1>
-        </div>
-    );
-}
+export const App = (props) => (
+    <div>
+        {props.children}
+    </div>
+);
 
 export default (
     <Route path="/" component={App}>
-        <Route path="main" component={Main} />
+        <Route path="main" component={MainNavigation} />
     </Route>
 );
