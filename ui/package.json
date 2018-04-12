@@ -18,6 +18,7 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
+    "big-integer": "^1.6.28",
     "bootstrap-loader": "^2.2.0",
     "bootstrap-sass": "^3.3.7",
     "bootstrap-webpack": "0.0.6",

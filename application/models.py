@@ -111,7 +111,7 @@ class Resource():
 
     # way to bound maximum work done during hashing
     # will only parse first ~2MB of data in file.
-    max_chunks_for_hash = 32
+    max_chunks_for_hash = 1
 
     @classmethod 
     def hashurl(cls, url):
@@ -120,16 +120,16 @@ class Resource():
         x = xxh64()
         CHUNK = 64 * 1024
         with urlopen(url) as f:
-            while not f.closed and i < cls.max_chunks_for_hash:
+            while not f.closed:# and i < cls.max_chunks_for_hash:
                 i = i + 1
                 chunk = f.read(CHUNK)
                 if chunk == b'':
                     break
-                x.update(f.read(CHUNK))
+                x.update(chunk)
 
         # force representation by 64 bit signed int.
         # this halves the power of the hashing function
-        return int(x.intdigest()/2)
+        return x.hexdigest()
 
     # see https://pypi.python.org/pypi/filetype#file-header
     # for rationale behind requiring only first 261 bytes
