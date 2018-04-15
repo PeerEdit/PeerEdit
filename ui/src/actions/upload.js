@@ -35,9 +35,7 @@ const tokenConfig = (token) => ({
     },
 });
 
-export function upload_resource_url(url, token) {
-    console.log("getting to upload request => ");
-    console.log(token);
+export function uploadResourceUrl(url, token) {
     return axios.post(
         '/api/index_new_resource'
         , { url }
@@ -48,7 +46,7 @@ export function upload_resource_url(url, token) {
 export function sendUrlRequest(url, token) {
     return (dispatch) => {
         dispatch(reportResourceUrlRequest(url));
-        upload_resource_url(url, token)
+        uploadResourceUrl(url, token)
             .then(
                 response => dispatch(reportResourceUrlSuccess(response)),
                 error => dispatch(reportResourceUrlError(error))

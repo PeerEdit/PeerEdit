@@ -3,6 +3,7 @@
 import React from 'react';
 import { Route } from 'react-router';
 import { MainNavigation } from './containers/MainNavigation';
+import { ResourceViewer } from './containers/ResourceViewer';
 
 export const App = (props) => (
     <div>
@@ -13,5 +14,6 @@ export const App = (props) => (
 export default (
     <Route path="/" component={App}>
         <Route path="main" component={MainNavigation} />
+        <Route path="viewer/:resourceId" component={ResourceViewer} />
     </Route>
 );
