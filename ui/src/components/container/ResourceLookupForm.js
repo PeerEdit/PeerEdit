@@ -1,7 +1,25 @@
 import React from 'react';
 
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
+import * as actionCreators from '../../actions/resource';
+
 import * as xxhash from 'xxhashjs';
 import bigInt from 'big-integer';
+
+function mapStateToProps(state) {
+    return {
+        inProg: state.resource.inProg,
+        resource: state.resource.resourceObj,
+        token: state.auth.token,
+        userName: state.auth.userName,
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators(actionCreators, dispatch);
+}
 
 // adapted from [https://stackoverflow.com/questions/14438187/javascript-filereader-parsing-long-file-in-chunks]
 function parseFile(file, callback, done) {
@@ -80,6 +98,7 @@ class ResourceLookupForm extends React.Component {
             }
             , () => {
                 hashDigests[curFile] = hashes[curFile].digest().toString(16);
+                this.props.getResource(hashDigests[curFile]);
                 console.log(numFiles);
                 if (Object.keys(hashDigests).length == numFiles) {
                     // all done
@@ -87,6 +106,8 @@ class ResourceLookupForm extends React.Component {
                         hashesCalculated: true,
                         hashDigests: hashDigests
                     })
+
+                    // search db for reported resources.
                     console.log(this.state.hashDigests);
                 }
             });
@@ -103,19 +124,21 @@ class ResourceLookupForm extends React.Component {
                 <form onSubmit={this.handleSubmit}>
                     <input type='file' onChange={this.handleFileInputChange} />
                 </form>
-                {this.state.links.length > 0 
+                {this.props.resource
                     ? <section>
                         <h3>Links Found</h3>
+                        <a href={`/view/${this.props.resource._id}`} target="_blank">Open In PeerEdit</a>
                         <ul>
-                            {this.state.links.map((link) => (
-                                <li id={link.id}>{link.url}</li>  
+                            {this.props.resource.links.map((link) => (
+                                <li key={link.url}>{link.url}</li>  
                             ))}
                         </ul>
-                    </section> 
+                    </section>
                     : null}
             </div>
         );
     }
 }
 
+ResourceLookupForm = connect(mapStateToProps, mapDispatchToProps)(ResourceLookupForm);
 export { ResourceLookupForm };

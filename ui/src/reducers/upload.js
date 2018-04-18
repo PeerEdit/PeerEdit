@@ -29,8 +29,6 @@ export function uploadReducer(state=initialState, action) {
                 errors: action.v
             });
         default:
-            console.log("UPLOAD REDUCER FALLTHROUGH");
-            console.log(action);
             return state;
     }
 }

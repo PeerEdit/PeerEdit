@@ -35,17 +35,21 @@ export function addResourceCommentFailure(error) {
     };
 }
 
-export function getResourceRequest() {
+export function getResourceRequest(resourceId) {
     return {
         type: GET_RESOURCE_REQUEST,
+        v: {
+            resourceId
+        }
     };
 }
 
-export function getResourceSuccess(resourceObj) {
+export function getResourceSuccess(resourceObj, resourceComments=null) {
     return {
         type: GET_RESOURCE_SUCCESS,
         v: {
-            resource: resourceObj
+            resourceObj: resourceObj,
+            resourceComments: resourceComments
         }
     };
 }
@@ -66,9 +70,15 @@ const tokenConfig = (token) => ({
 });
 
 export function getResourceWithId(id, token) {
-    return axios.get(
-        '/api/get_resource_from_hash/%s' % id,
-        tokenConfig(token));
+    if (token) {
+        return axios.get(
+            `/api/get_resource_from_hash/${id}`,
+            tokenConfig(token));
+    }
+    else {
+        return axios.get(
+            `/api/get_resource_from_hash/${id}`);
+    }
 }
 
 export function addResourceComment(commentObj, resourceId, token) {
@@ -82,9 +92,9 @@ export function addResourceComment(commentObj, resourceId, token) {
 export function getResource(resourceId, token) {
     return (dispatch) => {
         dispatch(getResourceRequest(resourceId));
-        getResourceWithId(url, token)
+        getResourceWithId(resourceId, token)
             .then(
-                response => dispatch(getResourceSuccess(response)),
+                response => dispatch(getResourceSuccess(response.data)),
                 error => dispatch(getResourceFailure(error))
             );
     };

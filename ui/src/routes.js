@@ -14,6 +14,6 @@ export const App = (props) => (
 export default (
     <Route path="/" component={App}>
         <Route path="main" component={MainNavigation} />
-        <Route path="viewer/:resourceId" component={ResourceViewer} />
+        <Route path="view/:resourceId" component={ResourceViewer} />
     </Route>
 );

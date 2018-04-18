@@ -11,7 +11,7 @@ import * as actionCreators from '../../actions/resource';
 function mapStateToProps(state) {
     return {
         isLoading: state.resource.isLoading,
-        resource: state.resource.resource,
+        resource: state.resource.resourceObj,
         token: state.auth.token
     };
 }

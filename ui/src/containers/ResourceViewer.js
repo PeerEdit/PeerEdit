@@ -1,17 +1,21 @@
 import React from 'react';
 
-import { PDFViewer } from "../components/presentational/PDFViewer/PDFViewer";
+import { PdfViewer } from "../components/presentational/PdfViewer/PdfViewer";
 import { DefaultViewer } from '../components/presentational/DefaultViewer/DefaultViewer';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+
 import * as actionCreators from '../actions/resource';
 
 function mapStateToProps(state) {
     return {
-        isLoading: state.resource.isLoading,
-        resource: state.resource.resource,
+        inProg: state.resource.inProg,
+        resource: state.resource.resourceObj,
         token: state.auth.token
     };
 }
@@ -29,17 +33,17 @@ class ResourceViewer extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.resource._id == this.props.match.params.resourceId) {
+        if (this.props.resource && this.props.resource._id == this.props.params.resourceId) {
             // resource is already cached, no need to reload.
             return;
         }
 
         if (this.props.token) {
-            this.props.getResource( this.props.match.params.resourceId, this.props.token);
+            this.props.getResource( this.props.params.resourceId, this.props.token);
         }
         else {
             // anonymous access to resource
-            this.props.getResource( this.props.match.params.resourceId);
+            this.props.getResource( this.props.params.resourceId);
         }
     }
 
@@ -48,17 +52,25 @@ class ResourceViewer extends React.Component {
     }
 
     render() {
-        switch( this.props.resource.kMIME ) {
-            case('application/pdf'):
-                return (<PDFViewer
-                            resource={this.props.resource}
-                            addCommentFunction={this.addNewComment} />);
-            default:
-                return (<DefaultViewer
-                            resource={this.props.resource}
-                            addCommentFunction={this.addNewComment} />);
+        if ( this.props.resource ) {
+            switch( this.props.resource.kMIME ) {
+                case('application/pdf'):
+                    return (<MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
+                                <PdfViewer
+                                    resource={this.props.resource}
+                                    addCommentFunction={this.addNewComment} />
+                            </MuiThemeProvider>);
+                default:
+                    return (<MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
+                                <DefaultViewer
+                                    resource={this.props.resource}
+                                    addCommentFunction={this.addNewComment} />
+                            </MuiThemeProvider>);
+            }
         }
-
+        else {
+            return null
+        }
     }
 }
 

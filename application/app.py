@@ -3,6 +3,9 @@ from .models import User, Resource
 from index import app, client
 from sqlalchemy.exc import IntegrityError
 from .utils.auth import generate_token, requires_auth, verify_token
+import requests
+from flask import Response
+from flask import stream_with_context
 
 @app.route('/', methods=['GET'])
 def index():
@@ -103,3 +106,14 @@ def is_token_valid():
         return jsonify(token_is_valid=True)
     else:
         return jsonify(token_is_valid=False), 403
+
+# required to bypass same-origin policy
+# may need to break out into dedicated tech for performance
+@app.route("/api/proxy_resource_request", methods=["GET"])
+def proxy_pdf_request():
+    incoming = request.args
+    if 'file' in incoming:
+        req = requests.get(incoming['file'], stream=True)
+        return Response(stream_with_context(req.iter_content()), content_type = req.headers['content-type'])
+    else:
+        return jsonify(message="no 'file' url parameter included in request"), 404
