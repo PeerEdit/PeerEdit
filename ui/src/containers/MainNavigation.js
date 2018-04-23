@@ -3,6 +3,7 @@ import React from 'react';
 import { ResourceLookupForm } from '../components/container/ResourceLookupForm';
 import { ResourceUploadForm } from '../components/container/ResourceUploadForm';
 import { LoginOrRegisterModal } from '../components/presentational/LoginOrRegisterModal';
+import { AuthDetector } from '../components/container/AuthDetector';
 
 class MainNavigation extends React.Component {
     render() {
@@ -25,6 +26,10 @@ class MainNavigation extends React.Component {
                 <section>
                     <h2>Sign In Below</h2>
                     <LoginOrRegisterModal />
+                </section>
+                <section>
+                    <h2>Auth Detection</h2>
+                    <AuthDetector />
                 </section>
             </div>
         );

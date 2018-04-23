@@ -16,7 +16,8 @@ function mapStateToProps(state) {
     return {
         inProg: state.resource.inProg,
         resource: state.resource.resourceObj,
-        token: state.auth.token
+        token: state.auth.token,
+        username: state.auth.userName,
     };
 }
 
@@ -30,6 +31,7 @@ class ResourceViewer extends React.Component {
         super(props);
 
         this.addNewComment = this.addNewComment.bind(this);
+        this.addNewCommentForViewer = this.addNewCommentForViewer.bind(this);
     }
 
     componentDidMount() {
@@ -47,8 +49,24 @@ class ResourceViewer extends React.Component {
         }
     }
 
-    addNewComment(text, viewerId, viewerData, replyTo) {
-        return;
+    addNewComment(text, viewerId, viewerData, isReply=false, replyTo) {
+        let commentObj = {
+            username: this.props.username,
+            resoureId: this.props.resource._id,
+            viewerId: viewerId,
+            text: text,
+            ts: new Date(),
+            viewerData: viewerData,
+        };
+        debugger;
+        this.props.addComment(commentObj, this.props.token, isReply, replyTo);
+    }
+
+    addNewCommentForViewer(viewerId) {
+        var self = this;
+        return (text, data, isReply, replyTo) => {
+            self.addNewComment(text, viewerId, data, isReply, replyTo);
+        };
     }
 
     render() {
@@ -58,13 +76,13 @@ class ResourceViewer extends React.Component {
                     return (<MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
                                 <PdfViewer
                                     resource={this.props.resource}
-                                    addCommentFunction={this.addNewComment} />
+                                    addCommentFunction={this.addNewCommentForViewer("PdfViewer")} />
                             </MuiThemeProvider>);
                 default:
                     return (<MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
                                 <DefaultViewer
                                     resource={this.props.resource}
-                                    addCommentFunction={this.addNewComment} />
+                                    addCommentFunction={this.addNewCommentForViewer("DefaultViewer")} />
                             </MuiThemeProvider>);
             }
         }

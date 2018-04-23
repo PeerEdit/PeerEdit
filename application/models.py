@@ -84,9 +84,25 @@ class Comment():
     coll_name = "comment"
 
     @classmethod
-    def create_new_comment(cls, comment):
-        return client[cls.db_name][cls.coll_name].insert_one(comment)
+    def add_new_comment(cls, comment):
+        return client[cls.db_name][cls.coll_name].insert_one(
+            comment
+        )
 
+    @classmethod
+    def add_new_comment_reply(cls, comment, reply_to_id):
+        return client[cls.db_name][cls.coll_name].update_one(
+            {"_id": reply_to_id},
+            {"$addToSet" : {"replies" : commment}}
+        )
+
+    @classmethod
+    def get_all_comments_for_resource(cls, resource_id):
+        return list(
+            client[cls.db_name][cls.coll_name].find({
+                    'resourceId': resource_id
+                })
+        )
 
 """ Rough Schema
 {

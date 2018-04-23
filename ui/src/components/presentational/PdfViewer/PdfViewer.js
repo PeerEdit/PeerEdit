@@ -347,6 +347,11 @@ class PdfViewer extends React.Component<Props, State> {
                       <Tip
                         onOpen={transformSelection}
                         onConfirm={comment => {
+
+                          this.props.addCommentFunction(
+                            comment
+                            , { content, position });
+
                           this.addHighlight({ content, position, comment });
 
                           hideTipAndSelection();

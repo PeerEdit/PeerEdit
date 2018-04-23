@@ -39,11 +39,20 @@ export function resourceReducer(state=initialState, action) {
 
         // handle add comments
         case ADD_RESOURCE_COMMENT_REQUEST:
-            return state;
+            return Object.assign({}, state, {
+                inProg: true
+            });
         case ADD_RESOURCE_COMMENT_SUCCESS:
-            return state;
+            return Object.assign({}, state, {
+                inProg: false,
+                resourceComments: action.v.resourceComments
+            });
         case ADD_RESOURCE_COMMENT_FAILURE:
-            return State;
+            return Object.assign({}, state, {
+                inProg: false,
+                errors: action.v
+            });
+
         default:
             return state;
     }

@@ -11,17 +11,20 @@ import {
 import axios from 'axios';
 
 // resource 
-export function addResourceCommentRequest() {
+export function addResourceCommentRequest(isReply=false) {
     return {
         type: ADD_RESOURCE_COMMENT_REQUEST,
+        v: {
+            isReply
+        }
     };
 }
 
-export function addResourceCommentSuccess(commentObj) {
+export function addResourceCommentSuccess(responseData) {
     return {
         type: ADD_RESOURCE_COMMENT_SUCCESS,
         v: {
-            comment: commentObj
+            resourceComments: responseData.resourceComments
         }
     };
 }
@@ -81,10 +84,22 @@ export function getResourceWithId(id, token) {
     }
 }
 
-export function addResourceComment(commentObj, resourceId, token) {
+export function addResourceComment(commentObj, token) {
     return axios.post(
-        '/api/add_comment_to_resource/%s' % resourceId,
-        { comment: commentObj },
+        '/api/add_comment',
+        {
+            comment: commentObj
+        },
+        tokenConfig(token));
+}
+
+export function addResourceCommentReply(commentObj, token, replyTo) {
+    return axios.post(
+        '/api/add_comment_reply',
+        {
+            comment: commentObj,
+            replyToCommentWithId: replyTo,
+        },
         tokenConfig(token));
 }
 
@@ -100,11 +115,13 @@ export function getResource(resourceId, token) {
     };
 }
 
-export function addComment(commentObj, resourceId, token) {
+export function addComment(commentObj, token, isReply=false, replyTo) {
     return (dispatch) => {
-        dispatch(addResourceCommentRequest(commentObj));
-        addResourceComment(commentObj, resourceId, token)
-            .then(
+        dispatch(addResourceCommentRequest(isReply));
+
+        let commPromise = (! isReply) ? addResourceComment(commentObj, token)
+                                      : addResourceCommentReply(commentObj, token, replyTo);
+        commPromise.then(
                 response => dispatch(addResourceCommentSuccess(response)),
                 error => dispatch(addResourceCommentFailure(error))
             );

@@ -25,17 +25,6 @@ def send_pdf(path):
 def get_user():
     return jsonify(result=g.current_user)
 
-@app.route("/api/create_comment", methods=["POST"])
-def create_comment():
-    incoming = request.get_json()
-    comment = Comment(
-        article_id=incoming["article_id"]
-        ,slug_hash=incoming["slug_hash"]
-        ,content_text=incoming["content_text"]
-        ,position_data=incoming["position_data"]
-    )
-    db.session.add(comment)
-
 @app.route("/api/get_resource_from_hash/<hashval>", methods=["GET"])
 def get_hash(hashval):
 
@@ -63,6 +52,56 @@ def create_new_resource():
             return jsonify(message="Resource already exists and is indexed"), 409
         else:
             return jsonify(resource)
+
+@app.route("/api/add_comment", methods=["POST"])
+@requires_auth
+def add_comment():
+    incoming = request.get_json()
+
+    print("-----PRINT STUFF-----")
+    print(request.headers)
+    print(incoming)
+
+    with client.start_session(causal_consistency=True) as session:
+        
+        # add new comment
+        try:
+            Comment.add_new_comment(incoming['comment']);
+        except Exception as e:
+            print(e)
+            return jsonify(message="Unspecified server error, unable to add comment"), 500
+        
+        # get all comments for resource to render
+        try:
+            comments = Comment.get_all_comments_for_resource(incoming['comment']['resourceId'])
+            return jsonify(resourceComments=comments)
+        except:
+            print(e)
+            return jsonify(message="Unspecified server error, unable to add comment"), 500
+
+@app.route("/api/add_comment_reply", methods=["POST"])
+@requires_auth
+def add_comment_reply():
+    incoming = request.get_json()
+
+    with client.start_session(causal_consistency=True) as session:
+
+        try:
+            Comment.add_new_comment_reply(
+                comment=incoming['comment'],
+                reply_to_id=incoming['replyToCommentWithId']
+            )
+        except Exception as e:
+            print(e)
+            return jsonify(message="Unspecified server error, unable to add comment reply"), 500
+        
+        # get all comments for resource to render
+        try:
+            comments = Comment.get_all_comments_for_resource(incoming['comment']['resourceId'])
+            return jsonify(resourceComments=comments)
+        except:
+            print(e)
+            return jsonify(message="Unspecified server error, unable to add comment reply"), 500
 
 @app.route("/api/create_user", methods=["POST"])
 def create_user():
