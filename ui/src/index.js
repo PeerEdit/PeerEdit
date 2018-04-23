@@ -6,11 +6,14 @@ import { syncHistoryWithStore } from 'react-router-redux';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import configureStore from './store/configureStore';
+import rootReducer from './reducers';
+import { INITIALIZE_STORE } from "./constants/";
 import routes from './routes';
 import './style.scss';
 
 injectTapEventPlugin();
-const store = configureStore();
+
+const store = configureStore(rootReducer({}, {type: INITIALIZE_STORE}));
 const history = syncHistoryWithStore(browserHistory, store);
 
 ReactDOM.render(

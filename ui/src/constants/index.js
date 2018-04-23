@@ -1,3 +1,5 @@
+// init store to default values so tree is constructed
+export const INITIALIZE_STORE = 'INITIALIZE_STORE';
 
 // action types for reporting resources
 export const REPORT_RESOURCE_URL_REQUEST = 'REPORT_RESOURCE_URL_REQUEST';

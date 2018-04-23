@@ -1,11 +1,15 @@
 from flask import request, render_template, jsonify, url_for, redirect, g, send_from_directory
-from .models import User, Resource
+from .models import User, Resource, Comment
 from index import app, client
 from sqlalchemy.exc import IntegrityError
 from .utils.auth import generate_token, requires_auth, verify_token
 import requests
 from flask import Response
 from flask import stream_with_context
+
+from .utils.enc import MongoDBJSONEncoder
+
+app.json_encoder = MongoDBJSONEncoder
 
 @app.route('/', methods=['GET'])
 def index():
@@ -58,24 +62,20 @@ def create_new_resource():
 def add_comment():
     incoming = request.get_json()
 
-    print("-----PRINT STUFF-----")
-    print(request.headers)
-    print(incoming)
-
     with client.start_session(causal_consistency=True) as session:
-        
+
         # add new comment
         try:
             Comment.add_new_comment(incoming['comment']);
         except Exception as e:
             print(e)
             return jsonify(message="Unspecified server error, unable to add comment"), 500
-        
+
         # get all comments for resource to render
         try:
             comments = Comment.get_all_comments_for_resource(incoming['comment']['resourceId'])
             return jsonify(resourceComments=comments)
-        except:
+        except Exception as e:
             print(e)
             return jsonify(message="Unspecified server error, unable to add comment"), 500
 

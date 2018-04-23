@@ -1,6 +1,10 @@
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import rootReducer from '../reducers';
+
+// persist subset of data in cookies
+import reduxCookiesMiddleware from 'redux-cookies-middleware';
+import { getStateFromCookies } from 'redux-cookies-middleware';
 
 const debugware = [];
 if (process.env.NODE_ENV !== 'production') {
@@ -11,11 +15,23 @@ if (process.env.NODE_ENV !== 'production') {
     }));
 }
 
+const cookiePaths = {
+    "auth.token": { name: "peeredit_token" },
+    "auth.userName": { name: "peeredit_username" },
+}
+
 export default function configureStore(initialState) {
+
+    initialState = getStateFromCookies(initialState, cookiePaths);
+
     const store = createStore(
         rootReducer,
         initialState,
-        applyMiddleware(thunkMiddleware, ...debugware)
+        applyMiddleware(
+            thunkMiddleware,
+            reduxCookiesMiddleware(cookiePaths),
+            ...debugware
+        )
     );
 
     if (module.hot) {

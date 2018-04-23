@@ -62,6 +62,12 @@ export function logout() {
     };
 }
 
+export function logoutInPlace() {
+    return (dispatch) => {
+        dispatch(logout());
+    };
+}
+
 export function logoutAndRedirect() {
     return (dispatch) => {
         dispatch(logout());

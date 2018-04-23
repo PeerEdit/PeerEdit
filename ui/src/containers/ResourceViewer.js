@@ -52,13 +52,12 @@ class ResourceViewer extends React.Component {
     addNewComment(text, viewerId, viewerData, isReply=false, replyTo) {
         let commentObj = {
             username: this.props.username,
-            resoureId: this.props.resource._id,
+            resourceId: this.props.resource._id,
             viewerId: viewerId,
             text: text,
             ts: new Date(),
             viewerData: viewerData,
         };
-        debugger;
         this.props.addComment(commentObj, this.props.token, isReply, replyTo);
     }
 
