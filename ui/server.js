@@ -30,6 +30,14 @@ app.all(/^\/api\/(.*)/, (req, res) => {
     proxy.web(req, res, { target: 'http://localhost:5000' });
 });
 
+app.all(/^\/px_http\/(.*)/, (req, res) => {
+    proxy.web(req, res, { target: 'http://localhost:9876' });
+});
+
+app.all(/^\/px_https\/(.*)/, (req, res) => {
+    proxy.web(req, res, { target: 'http://localhost:9876' });
+});
+
 app.get(/.*/, (req, res) => {
     res.sendFile(path.join(__dirname, '/index.html'));
 });

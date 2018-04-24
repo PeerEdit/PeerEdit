@@ -195,6 +195,7 @@ class PdfViewer extends React.Component<Props, State> {
     this.scrollToHighlightFromHash = this.scrollToHighlightFromHash.bind(this);
     this.postReplyGenerator = this.postReplyGenerator.bind(this);
     this.getHighlightById = this.getHighlightById.bind(this);
+    this.getProtoAndTarget = this.getProtoAndTarget.bind(this);
   }
 
   resetHighlights() {
@@ -259,9 +260,25 @@ class PdfViewer extends React.Component<Props, State> {
     }})
   }
 
+  getProtoAndTarget(url: string) {
+    var parser = document.createElement('a');
+    parser.href = url;
+
+    var strippedUrl = url.replace(/^https?:\/\//,'')
+
+    return {
+      proto: parser.protocol,
+      target: strippedUrl,
+    }
+  }
+
   render() {
     const { pageNumber, numPages } = this.state;
     const commentsNotNull = this.props.comments || [];
+
+    const urlInfo = this.getProtoAndTarget(this.props.resource.links[0].url);
+    const proxyBase = urlInfo.proto === "http:" ? "/px_http/" : "/px_https/";
+    const proxyUrl = `${proxyBase}${urlInfo.target}`;
     
     return (
       <SplitPane allowResize={true}
@@ -286,7 +303,7 @@ class PdfViewer extends React.Component<Props, State> {
           }}
         >
           { this.props.resource
-            ? <PdfLoader url={`/api/proxy_resource_request?file=${this.props.resource.links[0].url}`} beforeLoad={<Spinner />}>
+            ? <PdfLoader url={proxyUrl} beforeLoad={<Spinner />}>
                 {pdfDocument => (
                   <PdfAnnotator
                     pdfDocument={pdfDocument}
@@ -297,7 +314,7 @@ class PdfViewer extends React.Component<Props, State> {
 
                       this.scrollToHighlightFromHash();
                     }}
-                    url={`/api/proxy_resource_request?file=${this.props.resource.links[0].url}`}
+                    url={proxyUrl}
                     onSelectionFinished={(
                       position,
                       content,
