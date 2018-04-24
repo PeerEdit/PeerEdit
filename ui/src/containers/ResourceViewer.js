@@ -16,6 +16,7 @@ function mapStateToProps(state) {
     return {
         inProg: state.resource.inProg,
         resource: state.resource.resourceObj,
+        comments: state.resource.resourceComments,
         token: state.auth.token,
         username: state.auth.userName,
     };
@@ -75,12 +76,14 @@ class ResourceViewer extends React.Component {
                     return (<MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
                                 <PdfViewer
                                     resource={this.props.resource}
+                                    comments={this.props.comments}
                                     addCommentFunction={this.addNewCommentForViewer("PdfViewer")} />
                             </MuiThemeProvider>);
                 default:
                     return (<MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
                                 <DefaultViewer
                                     resource={this.props.resource}
+                                    comments={this.props.comments}
                                     addCommentFunction={this.addNewCommentForViewer("DefaultViewer")} />
                             </MuiThemeProvider>);
             }

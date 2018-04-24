@@ -129,21 +129,21 @@ class HighlightCard extends React.Component {
           <CardHeader
             title={<a href="http://www.google.com" target="_blank">Rahul Dhodapkar</a>}
             avatar={defaultAvatar}
-            subtitle={new Date().toLocaleDateString("en-US", dateRenderOptions)}
+            subtitle={new Date(this.highlight.ts).toLocaleDateString("en-US", dateRenderOptions)}
           />
           <div>
-            <strong>{this.highlight.comment.text}</strong>
-            {this.highlight.content.text ? (
+            <strong>{this.highlight.text}</strong>
+            {this.highlight.viewerData.content.text ? (
               <blockquote style={{ marginTop: "0.5rem" }}>
-                {`${this.highlight.content.text.slice(0, 90).trim()}…`}
+                {`${this.highlight.viewerData.content.text.slice(0, 90).trim()}…`}
               </blockquote>
             ) : null}
-            {this.highlight.content.image ? (
+            {this.highlight.viewerData.content.image ? (
               <div
                 className="highlight__image"
                 style={{ marginTop: "0.5rem" }}
               >
-                <img src={this.highlight.content.image} alt={"Screenshot"} />
+                <img src={this.highlight.viewerData.content.image} alt={"Screenshot"} />
               </div>
             ) : null}
           </div>
@@ -179,7 +179,7 @@ class HighlightCard extends React.Component {
               this.postReply(reply);
           }} /> : null}
           <div className="highlight__location">
-            Page {this.highlight.position.pageNumber}
+            Page {this.highlight.viewerData.position.pageNumber}
           </div>
         </div>
         {this.highlight.replies ? 

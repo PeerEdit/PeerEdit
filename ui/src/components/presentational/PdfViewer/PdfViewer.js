@@ -106,14 +106,14 @@ class AnnotationSearchBar extends React.Component {
 }
 
 const updateHash = highlight => {
-  location.hash = `highlight-${highlight.id}`;
+  location.hash = `highlight-${highlight._id}`;
 };
 
 // functional popup component
-const HighlightPopup = ({ comment }) =>
-  comment.text ? (
+const HighlightPopup = ({ text }) =>
+  text ? (
     <div className="Highlight__popup">
-      {comment.text}
+      {text}
     </div>
   ) : null;
 
@@ -126,7 +126,7 @@ const showNoHighlightsFilter = (highlights: Array<Object>) => {
 };
 
 function Sidebar(props) {
-  let highlights = props.highlights;
+  let highlights = props.comments;
   let resetHighlights = props.resetHighlights;
   let searchHighlights = props.searchHighlights;
   let postReplyGenerator = props.postReplyGenerator;
@@ -147,9 +147,9 @@ function Sidebar(props) {
       </div>
 
       <ul className="sidebar__highlights">
-        {highlights.sort((a, b) => a.position.boundingRect.y1 > b.position.boundingRect.y1)
+        {highlights.sort((a, b) => a.viewerData.position.boundingRect.y1 > b.viewerData.position.boundingRect.y1)
                    .map((highlight, index) => (
-          <li key={highlight.id} className="sidebar__highlight">
+          <li key={highlight._id} className="sidebar__highlight">
             <HighlightCard highlight={highlight} 
                            updateHash={updateHash}
                            postReply={postReplyGenerator(highlight)} />
@@ -174,7 +174,6 @@ const fuseOptions = {
 
 type Props = {};
 type State = {
-  highlights: Array<T_Highlight>,
   highlightsFilter: (i: Array<T_Highlight>) => Array<T_Highlight>,
   fuseInterface: T_Fuse<T_Highlight>
 };
@@ -186,7 +185,6 @@ class PdfViewer extends React.Component<Props, State> {
   constructor(props) {
     super(props)
     this.state = {
-      highlights: [],
       highlightsFilter: showAllHighlightsFilter,
       fuseInterface: new Fuse([], fuseOptions)
     };
@@ -196,12 +194,12 @@ class PdfViewer extends React.Component<Props, State> {
     this.scrollViewerTo = this.scrollViewerTo.bind(this);
     this.scrollToHighlightFromHash = this.scrollToHighlightFromHash.bind(this);
     this.postReplyGenerator = this.postReplyGenerator.bind(this);
+    this.getHighlightById = this.getHighlightById.bind(this);
   }
 
   resetHighlights() {
     this.setState((prevState, props) => {
       return {
-        highlights: [],
         highlightsFilter: showAllHighlightsFilter,
         fuseInterface: new Fuse([], fuseOptions)
       }
@@ -227,23 +225,18 @@ class PdfViewer extends React.Component<Props, State> {
   }
 
   getHighlightById(id: string) {
-    const { highlights } = this.state;
+    const highlights = this.props.comments || [];
 
-    return highlights.find(highlight => highlight.id === id);
+    return highlights.find(highlight => highlight._id === id);
   }
 
   addHighlight(highlight: T_NewHighlight) {
     const { highlights } = this.state;
-
+    // transform from viewer idea of highlights to comment-centric view in DB.
+    this.props.addCommentFunction( highlight.comment.text
+                                  , { "content" : highlight.content
+                                      , "position" : highlight.position } );
     console.log("Saving highlight", highlight);
-
-    this.setState((prevState, props) => {
-      let nxtHighlights = [{ ...highlight, id: getNextId() }, ...highlights]
-      return {
-        highlights: nxtHighlights,
-        fuseInterface: new Fuse(nxtHighlights, fuseOptions)
-      }
-    });
   }
 
   postReplyGenerator(highlight: T_Highlight) {
@@ -251,7 +244,7 @@ class PdfViewer extends React.Component<Props, State> {
       console.log(`writing reply for ${highlight}`);
       this.setState( (prevState, props) => {
         let nxtHighlights = prevState.highlights.map((h) => {
-          if (h.id == highlight.id) {
+          if (h.id == highlight._id) {
             if ('replies' in h) {
               h.replies.push(reply);
             }
@@ -296,12 +289,13 @@ class PdfViewer extends React.Component<Props, State> {
 
     let ids = this.state.fuseInterface.search(s)
     this.setState({highlightsFilter: (highlights) => {
-      return highlights.filter( (highlight) => { return ids.includes(highlight.id); });
+      return highlights.filter( (highlight) => { return ids.includes(highlight._id); });
     }})
   }
 
   render() {
     const { pageNumber, numPages } = this.state;
+    const commentsNotNull = this.props.comments || [];
     
     return (
       <SplitPane allowResize={true}
@@ -312,7 +306,7 @@ class PdfViewer extends React.Component<Props, State> {
                  style={{ height: "100vh", overflow: "auto"}}
                  resizerStyle={{ "background": "#000", "padding": "2px", "cursor": "col-resize"}}>
         <Sidebar
-          highlights={ this.state.highlightsFilter(this.state.highlights) }
+          comments={ this.state.highlightsFilter(commentsNotNull) }
           resetHighlights={ this.resetHighlights }
           searchHighlights={ this.searchHighlights }
           postReplyGenerator={ this.postReplyGenerator }
@@ -347,13 +341,7 @@ class PdfViewer extends React.Component<Props, State> {
                       <Tip
                         onOpen={transformSelection}
                         onConfirm={comment => {
-
-                          this.props.addCommentFunction(
-                            comment
-                            , { content, position });
-
                           this.addHighlight({ content, position, comment });
-
                           hideTipAndSelection();
                         }}
                       />
@@ -370,19 +358,18 @@ class PdfViewer extends React.Component<Props, State> {
                       const isTextHighlight = !Boolean(
                         highlight.content && highlight.content.image
                       );
-
                       const component = isTextHighlight ? (
                         <Highlight
                           isScrolledTo={isScrolledTo}
-                          position={highlight.position}
-                          comment={highlight.comment}
+                          position={highlight.viewerData.position}
+                          comment={highlight.text}
                         />
                       ) : (
                         <AreaHighlight
                           highlight={highlight}
                           onChange={boundingRect => {
                             this.updateHighlight(
-                              highlight.id,
+                              highlight._id,
                               { boundingRect: viewportToScaled(boundingRect) },
                               { image: screenshot(boundingRect) }
                             );
@@ -402,7 +389,7 @@ class PdfViewer extends React.Component<Props, State> {
                         />
                       );
                     }}
-                    highlights={ this.state.highlightsFilter(this.state.highlights) }
+                    highlights={ this.state.highlightsFilter(commentsNotNull) }
                   />
                 )}
             </PdfLoader>

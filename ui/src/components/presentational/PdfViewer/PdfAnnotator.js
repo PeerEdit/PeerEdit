@@ -193,7 +193,7 @@ class PdfAnnotator<T_HT: T_Highlight> extends Component<
     return [...highlights, ghostHighlight]
       .filter(Boolean)
       .reduce((res, highlight) => {
-        const { pageNumber } = highlight.position;
+        const { pageNumber } = highlight.viewerData.position;
 
         res[pageNumber] = res[pageNumber] || [];
         res[pageNumber].push(highlight);
@@ -216,7 +216,7 @@ class PdfAnnotator<T_HT: T_Highlight> extends Component<
       return;
     }
 
-    this.renderTipAtPosition(highlight.position, content);
+    this.renderTipAtPosition(highlight.viewerData.position, content);
   }
 
   scaledPositionToViewport({
@@ -273,19 +273,24 @@ class PdfAnnotator<T_HT: T_Highlight> extends Component<
           <div>
             {(highlightsByPage[String(pageNumber)] || []).map(
               (highlight, index) => {
-                const { position, ...rest } = highlight;
+
+                const {viewerData, ...restBase} = highlight;
+                const { position, ...restViewerData } = viewerData;
 
                 const viewportHighlight = {
-                  position: this.scaledPositionToViewport(position),
-                  ...rest
+                  viewerData: {
+                    position: this.scaledPositionToViewport(position),
+                    ...restViewerData
+                  },
+                  ...restBase
                 };
 
-                if (tip && tip.highlight.id === String(highlight.id)) {
+                if (tip && tip.highlight._id === String(highlight._id)) {
                   this.showTip(tip.highlight, tip.callback(viewportHighlight));
                 }
 
                 const isScrolledTo = Boolean(
-                  scrolledToHighlightId === highlight.id
+                  scrolledToHighlightId === highlight._id
                 );
 
                 return highlightTransform(
@@ -365,7 +370,7 @@ class PdfAnnotator<T_HT: T_Highlight> extends Component<
   };
 
   scrollTo = (highlight: T_Highlight) => {
-    const { pageNumber, boundingRect, usePdfCoordinates } = highlight.position;
+    const { pageNumber, boundingRect, usePdfCoordinates } = highlight.viewerData.position;
 
     this.viewer.container.removeEventListener("scroll", this.onScroll);
 
@@ -389,7 +394,7 @@ class PdfAnnotator<T_HT: T_Highlight> extends Component<
 
     this.setState(
       {
-        scrolledToHighlightId: highlight.id
+        scrolledToHighlightId: highlight._id
       },
       () => this.renderHighlights()
     );
@@ -510,7 +515,7 @@ class PdfAnnotator<T_HT: T_Highlight> extends Component<
         () =>
           this.setState(
             {
-              ghostHighlight: { position: scaledPosition }
+              ghostHighlight: { viewerData: { position: scaledPosition } }
             },
             () => this.renderHighlights()
           )
@@ -581,9 +586,11 @@ class PdfAnnotator<T_HT: T_Highlight> extends Component<
                   () =>
                     this.setState(
                       {
-                        ghostHighlight: {
-                          position: scaledPosition,
-                          content: { image }
+                        ghostHighlight: { 
+                          viewerData: {
+                            position: scaledPosition,
+                            content: { image }
+                          }
                         }
                       },
                       () => {

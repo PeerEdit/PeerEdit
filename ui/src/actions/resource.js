@@ -3,6 +3,10 @@ import {
     ADD_RESOURCE_COMMENT_SUCCESS,
     ADD_RESOURCE_COMMENT_FAILURE,
 
+    GET_RESOURCE_COMMENTS_REQUEST,
+    GET_RESOURCE_COMMENTS_SUCCESS,
+    GET_RESOURCE_COMMENTS_FAILURE,
+
     GET_RESOURCE_REQUEST,
     GET_RESOURCE_SUCCESS,
     GET_RESOURCE_FAILURE,
@@ -20,11 +24,11 @@ export function addResourceCommentRequest(isReply=false) {
     };
 }
 
-export function addResourceCommentSuccess(responseData) {
+export function addResourceCommentSuccess(response) {
     return {
         type: ADD_RESOURCE_COMMENT_SUCCESS,
         v: {
-            resourceComments: responseData.resourceComments
+            resourceComments: response.data
         }
     };
 }
@@ -36,6 +40,30 @@ export function addResourceCommentFailure(error) {
             error: error
         }
     };
+}
+
+export function getResourceCommentsRequest() {
+    return {
+        type: GET_RESOURCE_COMMENTS_REQUEST,
+    };
+}
+
+export function getResourceCommentsSuccess(comments) {
+    return {
+        type: GET_RESOURCE_COMMENTS_SUCCESS,
+        v: {
+            resourceComments: comments
+        }
+    };
+}
+
+export function getResourceCommentsFailure(error) {
+    return {
+        type: GET_RESOURCE_COMMENTS_FAILURE,
+        v: {
+            error: error
+        }
+    }
 }
 
 export function getResourceRequest(resourceId) {
@@ -84,6 +112,17 @@ export function getResourceWithId(id, token) {
     }
 }
 
+export function getResourceCommentsWithId(id, token) {
+    if (token) {
+        return axios.get(
+            `/api/get_comments_from_hash/${id}`,
+            tokenConfig(token));
+    }
+    else {
+        return axios.get(
+            `/api/get_comments_from_hash/${id}`);
+    }
+}
 export function addResourceComment(commentObj, token) {
     return axios.post(
         '/api/add_comment',
@@ -111,6 +150,12 @@ export function getResource(resourceId, token) {
             .then(
                 response => dispatch(getResourceSuccess(response.data)),
                 error => dispatch(getResourceFailure(error))
+            );
+        dispatch(getResourceCommentsRequest(resourceId));
+        getResourceCommentsWithId(resourceId, token)
+            .then(
+                response => dispatch(getResourceCommentsSuccess(response.data)),
+                error => dispatch(getResourceCommentsFailure(error))
             );
     };
 }

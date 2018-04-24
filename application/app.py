@@ -30,11 +30,21 @@ def get_user():
     return jsonify(result=g.current_user)
 
 @app.route("/api/get_resource_from_hash/<hashval>", methods=["GET"])
-def get_hash(hashval):
+def get_resource_from_hash(hashval):
 
     with client.start_session(causal_consistency=True) as session:
         try:
             return jsonify(Resource.get_resource_with_id(hashval))
+        except Exception as e:
+            print(e)
+            return jsonify(message="Could not find resource with that hash"), 404
+
+@app.route("/api/get_comments_from_hash/<hashval>", methods=["GET"])
+def get_comments_from_hash(hashval):
+
+    with client.start_session(causal_consistency=True) as session:
+        try:
+            return jsonify(Comment.get_all_comments_for_resource(hashval))
         except Exception as e:
             print(e)
             return jsonify(message="Could not find resource with that hash"), 404
@@ -74,7 +84,7 @@ def add_comment():
         # get all comments for resource to render
         try:
             comments = Comment.get_all_comments_for_resource(incoming['comment']['resourceId'])
-            return jsonify(resourceComments=comments)
+            return jsonify(comments)
         except Exception as e:
             print(e)
             return jsonify(message="Unspecified server error, unable to add comment"), 500
@@ -98,7 +108,7 @@ def add_comment_reply():
         # get all comments for resource to render
         try:
             comments = Comment.get_all_comments_for_resource(incoming['comment']['resourceId'])
-            return jsonify(resourceComments=comments)
+            return jsonify(comments)
         except:
             print(e)
             return jsonify(message="Unspecified server error, unable to add comment reply"), 500
