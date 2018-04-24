@@ -36,7 +36,7 @@ class HighlightReplyCard extends React.Component {
         <CardHeader
           title="Rahul Dhodapkar"
           avatar={defaultAvatar}
-          subtitle={this.ts.toLocaleDateString("en-US", dateRenderOptions)}
+          subtitle={new Date(this.ts).toLocaleDateString("en-US", dateRenderOptions)}
         />
         <CardText>
           {this.text}

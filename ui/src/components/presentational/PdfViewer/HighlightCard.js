@@ -182,11 +182,11 @@ class HighlightCard extends React.Component {
             Page {this.highlight.viewerData.position.pageNumber}
           </div>
         </div>
-        {this.highlight.replies ? 
+        {this.props.highlight.replies ? 
           (<CardHeader 
             actAsExpander={true}
             showExpandableButton={true}
-            subtitle={`${this.highlight.replies.length} replies`}
+            subtitle={`${this.props.highlight.replies.length} ${this.props.highlight.replies.length > 1 ? "replies" : "reply"}`}
           />) : null}
         <CardText expandable={true}
                   style={{
@@ -194,7 +194,7 @@ class HighlightCard extends React.Component {
           , paddingLeft: "25px"
           ,backgroundColor: "#CCC"
         }}>
-          { this.highlight.replies ? this.highlight.replies.map((val, ix) => {
+          { this.props.highlight.replies ? this.props.highlight.replies.map((val, ix) => {
               return (<HighlightReplyCard key={ix} 
                                           text={val.text}
                                           ts={val.ts} />);

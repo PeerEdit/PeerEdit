@@ -242,43 +242,9 @@ class PdfViewer extends React.Component<Props, State> {
   postReplyGenerator(highlight: T_Highlight) {
     return (reply) => {
       console.log(`writing reply for ${highlight}`);
-      this.setState( (prevState, props) => {
-        let nxtHighlights = prevState.highlights.map((h) => {
-          if (h.id == highlight._id) {
-            if ('replies' in h) {
-              h.replies.push(reply);
-            }
-            else{
-              h.replies = [reply];
-            }
-          }
-          return h
-        });
-        return { highlights: nxtHighlights };
-      })
+      this.props.addCommentFunction( reply.text, {}, true, highlight._id);
     };
   };
-
-  updateHighlight(highlightId: string, position: Object, content: Object) {
-    console.log("Updating highlight", highlightId, position, content);
-
-    this.setState( (prevState, props) => {
-      let nxtHighlights = this.state.highlights.map(h => {
-        return h.id === highlightId
-          ? {
-              ...h,
-              position: { ...h.position, ...position },
-              content: { ...h.content, ...content }
-            }
-          : h;
-        })
-
-      return {
-        fuseInterface: new Fuse(nxtHighlights, fuseOptions),
-        highlights: nxtHighlights
-      }
-    });
-  }
 
   searchHighlights(s: string) {
     console.log("Exec search", s);
@@ -356,7 +322,7 @@ class PdfViewer extends React.Component<Props, State> {
                       isScrolledTo
                     ) => {
                       const isTextHighlight = !Boolean(
-                        highlight.content && highlight.content.image
+                        highlight.viewerData.content && highlight.viewerData.content.image
                       );
                       const component = isTextHighlight ? (
                         <Highlight
@@ -367,13 +333,6 @@ class PdfViewer extends React.Component<Props, State> {
                       ) : (
                         <AreaHighlight
                           highlight={highlight}
-                          onChange={boundingRect => {
-                            this.updateHighlight(
-                              highlight._id,
-                              { boundingRect: viewportToScaled(boundingRect) },
-                              { image: screenshot(boundingRect) }
-                            );
-                          }}
                         />
                       );
 

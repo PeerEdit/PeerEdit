@@ -6,6 +6,8 @@ from xxhash import xxh64
 from filetype import filetype
 import traceback
 
+import bson
+
 import sys
 
 """ Rough Schema
@@ -92,8 +94,8 @@ class Comment():
     @classmethod
     def add_new_comment_reply(cls, comment, reply_to_id):
         return client[cls.db_name][cls.coll_name].update_one(
-            {"_id": reply_to_id},
-            {"$addToSet" : {"replies" : commment}}
+            {"_id": bson.objectid.ObjectId(reply_to_id)},
+            {"$addToSet" : {"replies" : comment}}
         )
 
     @classmethod

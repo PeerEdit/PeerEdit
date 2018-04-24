@@ -21,30 +21,12 @@ class AreaHighlight extends Component<Props> {
     return (
       <Rnd
         className="AreaHighlight"
-        onDragStop={(_, data) => {
-          const boundingRect = {
-            ...highlight.position.boundingRect,
-            top: data.y,
-            left: data.x
-          };
-
-          onChange(boundingRect);
-        }}
-        onResizeStop={(_, direction, ref, delta, position) => {
-          const boundingRect = {
-            top: position.y,
-            left: position.x,
-            width: ref.offsetWidth,
-            height: ref.offsetHeight
-          };
-
-          onChange(boundingRect);
-        }}
+        disableDragging={true}
         default={{
-          x: highlight.position.boundingRect.left,
-          y: highlight.position.boundingRect.top,
-          width: highlight.position.boundingRect.width,
-          height: highlight.position.boundingRect.height
+          x: highlight.viewerData.position.boundingRect.left,
+          y: highlight.viewerData.position.boundingRect.top,
+          width: highlight.viewerData.position.boundingRect.width,
+          height: highlight.viewerData.position.boundingRect.height
         }}
         onClick={event => {
           event.stopPropagation();
