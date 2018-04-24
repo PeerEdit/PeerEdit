@@ -6,6 +6,7 @@ from .utils.auth import generate_token, requires_auth, verify_token
 import requests
 from flask import Response
 from flask import stream_with_context
+from datetime import datetime
 
 from .utils.enc import MongoDBJSONEncoder
 
@@ -76,7 +77,9 @@ def add_comment():
 
         # add new comment
         try:
-            Comment.add_new_comment(incoming['comment']);
+            comment_obj = incoming['comment']
+            comment_obj['ts'] = datetime.now()
+            Comment.add_new_comment(comment_obj);
         except Exception as e:
             print(e)
             return jsonify(message="Unspecified server error, unable to add comment"), 500
@@ -97,8 +100,10 @@ def add_comment_reply():
     with client.start_session(causal_consistency=True) as session:
 
         try:
+            comment_obj = incoming['comment']
+            comment_obj['ts'] = datetime.now()
             Comment.add_new_comment_reply(
-                comment=incoming['comment'],
+                comment_obj,
                 reply_to_id=incoming['replyToCommentWithId']
             )
         except Exception as e:

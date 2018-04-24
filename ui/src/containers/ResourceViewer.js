@@ -56,7 +56,6 @@ class ResourceViewer extends React.Component {
             resourceId: this.props.resource._id,
             viewerId: viewerId,
             text: text,
-            ts: new Date(),
             viewerData: viewerData,
         };
         this.props.addComment(commentObj, this.props.token, isReply, replyTo);
