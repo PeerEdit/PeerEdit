@@ -129,9 +129,8 @@ class HighlightCard extends React.Component {
             expanded={this.state.replyExpanded} >
         <div className="sidebar__card">
           <CardHeader
-            title={<a href="http://www.google.com" target="_blank">Rahul Dhodapkar</a>}
-            avatar={defaultAvatar}
-            subtitle={new Date(this.highlight.ts).toLocaleDateString("en-US", dateRenderOptions)}
+            title={this.props.highlight.username}
+            subtitle={new Date(this.highlight.ts).toLocaleDateString("en-US")}
           />
           <div>
             <strong>{this.highlight.text}</strong>
@@ -194,7 +193,8 @@ class HighlightCard extends React.Component {
           { this.props.highlight.replies ? this.props.highlight.replies.map((val, ix) => {
               return (<HighlightReplyCard key={ix} 
                                           text={val.text}
-                                          ts={val.ts} />);
+                                          ts={val.ts} 
+                                          username={val.username}/>);
             }) : null }
         </CardText>
       </Card>

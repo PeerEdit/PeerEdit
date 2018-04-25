@@ -4,7 +4,6 @@ from datetime import datetime
 import flask
 
 import urllib
-from urllib.request import urlopen
 from xxhash import xxh64
 from filetype import filetype
 import traceback
@@ -134,6 +133,17 @@ class Resource():
     # will only parse first ~2MB of data in file.
     max_chunks_for_hash = 1
 
+    hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
+       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+       'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
+       'Accept-Encoding': 'none',
+       'Accept-Language': 'en-US,en;q=0.8',
+       'Connection': 'keep-alive'}
+
+    opener = urllib.request.build_opener()
+    opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+    urllib.request.install_opener(opener)
+
     # TODO: add error handling
     @classmethod
     def store_file_with_id(cls, url, fid):
@@ -153,7 +163,7 @@ class Resource():
         i = 0
         x = xxh64()
         CHUNK = 64 * 1024
-        with urlopen(url) as f:
+        with urllib.request.urlopen(url) as f:
             while not f.closed:# and i < cls.max_chunks_for_hash:
                 i = i + 1
                 chunk = f.read(CHUNK)
@@ -169,7 +179,7 @@ class Resource():
     # for rationale behind requiring only first 261 bytes
     @classmethod
     def get_filetype(cls, url):
-        with urlopen(url) as f:
+        with urllib.request.urlopen(url) as f:
             return filetype.guess(f.read(261))
 
     # TODO: add network exception handling / retry logic

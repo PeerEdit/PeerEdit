@@ -50,7 +50,7 @@ class ResourceUploadForm extends React.Component {
                 {this.props.inProg ? <p>Indexing resource...</p> : null}
                 {this.props.uploadedObj && ! this.props.uploadErrors 
                         ? <p>Successfully indexed resource</p> : null}
-                {this.props.uploadErrors ? <p>FAILED: {this.props.uploadErrors}</p> : null}
+                {this.props.uploadErrors ? <p>FAILED: {this.props.uploadErrors.message}</p> : null}
             </div>
         );
     }

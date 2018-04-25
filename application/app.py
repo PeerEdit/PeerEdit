@@ -68,7 +68,7 @@ def create_new_resource():
         # TODO: add additional error handling here.
         except Exception as e:
             print(e)
-            return jsonify(message="Resource already exists and is indexed"), 409
+            return jsonify(message="Unable to index resource"), 409
         else:
             return jsonify(resource)
 

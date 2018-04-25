@@ -28,15 +28,15 @@ class HighlightReplyCard extends React.Component {
 
     this.ts = props.ts;
     this.text = props.text;
+    this.username = props.username;
   }
 
   render() {
     return (
       <Card>
         <CardHeader
-          title="Rahul Dhodapkar"
-          avatar={defaultAvatar}
-          subtitle={new Date(this.ts).toLocaleDateString("en-US", dateRenderOptions)}
+          title={this.username}
+          subtitle={new Date(this.ts).toLocaleDateString("en-US")}
         />
         <CardText>
           {this.text}
