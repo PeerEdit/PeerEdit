@@ -71,25 +71,28 @@ class Tip extends Component<Props, State> {
               <div>
                 <LoginOrChild message="Log in to comment" store={store}>
                 {/* TODO: determine whether to use controlled or uncontrolled component here */}
-                  <TextField
-                    fullWidth={true}
-                    hintText="Your comment"
-                    defaultValue={text}
-                    multiLine={true}
-                    onChange={event => this.setState({ text: event.target.value })}
-                    ref={node => {
-                      if (node) {
-                        node.focus();
-                      }
-                    }}
-                  />
+                  <div>
+                    <TextField
+                      fullWidth={true}
+                      hintText="Your comment"
+                      defaultValue={text}
+                      multiLine={true}
+                      onChange={event => this.setState({ text: event.target.value })}
+                      ref={node => {
+                        if (node) {
+                          node.focus();
+                        }
+                      }}
+                    />
+                    <div>
+                      <RaisedButton primary={true} type="submit" value="Save">
+                        Submit
+                      </RaisedButton>
+                    </div>
+                  </div>
                 </LoginOrChild>
               </div>
-              <div>
-                <RaisedButton primary={true} type="submit" value="Save">
-                  Submit
-                </RaisedButton>
-              </div>
+
             </form>
           )}
         </div>

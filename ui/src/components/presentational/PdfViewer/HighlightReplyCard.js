@@ -41,22 +41,6 @@ class HighlightReplyCard extends React.Component {
         <CardText>
           {this.text}
         </CardText>
-        <CardActions>
-          <FlatButton className="thumbsUpButton" 
-                      onClick={(e) => {window.alert("+");}}
-                      backgroundColor={thumbsUpColor}
-                      hoverColor={thumbsUpHoverColor}
-                      style={{width:"24px"}}
-                      icon={<img src={thumbsUpImg} alt="+" />}
-          />
-          <FlatButton className="thumbsDownButton" 
-                      onClick={(e) => {window.alert("-");}}
-                      backgroundColor={thumbsDownColor}
-                      hoverColor={thumbsDownHoverColor}
-                      style={{width:"24px"}}
-                      icon={<img src={thumbsDownImg} alt="-" />}
-          />
-        </CardActions>
       </Card>
     );
   }

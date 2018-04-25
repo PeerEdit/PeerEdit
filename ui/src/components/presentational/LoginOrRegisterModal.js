@@ -26,7 +26,7 @@ class LoginOrRegisterModal extends React.Component {
 
     render() {
         return (
-            <div>
+            <div style={{margin: "2em"}}>
                 {this.props.message ? <h4>{this.props.message}</h4> : null}
                 {this.state.displayLoginForm
                     ? (<div>

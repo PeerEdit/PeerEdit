@@ -12,6 +12,8 @@ import thumbsUpImg from './images/thumbs-up.png';
 import thumbsDownImg from './images/thumbs-down.png';
 import defaultAvatar from './images/default-avatar-256.png';
 
+import { LoginOrChild } from "../../container/LoginOrChild";
+
 const dateRenderOptions = {
   year: 'numeric'
   ,month: 'numeric'
@@ -158,26 +160,21 @@ class HighlightCard extends React.Component {
                         onClick={(e) => {this.toggleReplyState();}}>
               { this.state.replyExposed ? "Close Reply" : "Reply" }
             </FlatButton>
-            <FlatButton className="thumbsUpButton" 
-                        onClick={(e) => {window.alert("+");}}
-                        backgroundColor={thumbsUpColor}
-                        hoverColor={thumbsUpHoverColor}
-                        style={{width:"24px"}}
-                        icon={<img src={thumbsUpImg} alt="+" />}
-            />
-            <FlatButton className="thumbsDownButton" 
-                        onClick={(e) => {window.alert("-");}}
-                        backgroundColor={thumbsDownColor}
-                        hoverColor={thumbsDownHoverColor}
-                        style={{width:"24px"}}
-                        icon={<img src={thumbsDownImg} alt="-" />}
             />
           </CardActions>
-          { this.state.replyExposed ? <ReplyForm postReply={(reply) => {
-              this.toggleReplyState();
-              this.setState({replyExpanded: true});
-              this.postReply(reply);
-          }} /> : null}
+          { this.state.replyExposed 
+              ? (
+                  <Paper zDepth={2}>
+                    <LoginOrChild message="Log in to reply">
+                      <ReplyForm postReply={(reply) => {
+                        this.toggleReplyState();
+                        this.setState({replyExpanded: true});
+                        this.postReply(reply);
+                      }} />
+                    </LoginOrChild>
+                  </Paper>
+                ) 
+              : null}
           <div className="highlight__location">
             Page {this.highlight.viewerData.position.pageNumber}
           </div>
