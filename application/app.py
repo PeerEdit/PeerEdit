@@ -40,6 +40,10 @@ def get_resource_from_hash(hashval):
             print(e)
             return jsonify(message="Could not find resource with that hash"), 404
 
+@app.route("/api/get_resource_bin_from_hash/<hashval>", methods=["GET"])
+def get_resource_bin_from_hash(hashval):
+    return Resource.get_file_with_id(hashval);
+
 @app.route("/api/get_comments_from_hash/<hashval>", methods=["GET"])
 def get_comments_from_hash(hashval):
 

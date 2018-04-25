@@ -276,10 +276,13 @@ class PdfViewer extends React.Component<Props, State> {
     const { pageNumber, numPages } = this.state;
     const commentsNotNull = this.props.comments || [];
 
-    const urlInfo = this.getProtoAndTarget(this.props.resource.links[0].url);
-    const proxyBase = urlInfo.proto === "http:" ? "/px_http/" : "/px_https/";
-    const proxyUrl = `${proxyBase}${urlInfo.target}`;
+    // if proxy will be enabled in the future
+    //const urlInfo = this.getProtoAndTarget(this.props.resource.links[0].url);
+    //const proxyBase = urlInfo.proto === "http:" ? "/px_http/" : "/px_https/";
+    //const proxyUrl = `${proxyBase}${urlInfo.target}`;
     
+    const proxyUrl = `/api/get_resource_bin_from_hash/${this.props.resource._id}`;
+
     return (
       <SplitPane allowResize={true}
                  split="vertical"

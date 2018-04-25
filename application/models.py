@@ -1,6 +1,9 @@
 from index import client, bcrypt
 from datetime import datetime
 
+import flask
+
+import urllib
 from urllib.request import urlopen
 from xxhash import xxh64
 from filetype import filetype
@@ -131,6 +134,19 @@ class Resource():
     # will only parse first ~2MB of data in file.
     max_chunks_for_hash = 1
 
+    # TODO: add error handling
+    @classmethod
+    def store_file_with_id(cls, url, fid):
+        try:
+            urllib.request.urlretrieve(url, 'application/resources/{}'.format(fid))
+        except Exception as e:
+            print(e)
+            raise
+
+    @classmethod
+    def get_file_with_id(cls, fid):
+        return flask.send_from_directory('application/resources/', fid)
+
     @classmethod 
     def hashurl(cls, url):
         # hash binary
@@ -167,6 +183,8 @@ class Resource():
         """ Index a new resource, hash, and store """
         hashval = cls.hashurl(resource['url'])
         guessed_type = cls.get_filetype(resource['url'])
+
+        cls.store_file_with_id(resource['url'], hashval);
 
         # persist data
         with client.start_session(causal_consistency=True) as session:
