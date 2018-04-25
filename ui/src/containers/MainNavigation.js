@@ -82,7 +82,7 @@ class MainNavigation extends React.Component {
                   <div className="container-fluid p-0">
                     <div className="row no-gutters">
 
-                      <div className="col-lg-6 order-lg-2 text-white showcase-img" style={{backgroundImage: 'url("/img/bg-showcase-1.jpg")'}}></div>
+                      <div className="col-lg-6 order-lg-2 text-white showcase-img" style={{backgroundImage: 'url("/img/discuss.gif")'}}></div>
                       <div className="col-lg-6 order-lg-1 my-auto showcase-text" style={{padding: '3em'}}>
                         <h2>Discuss</h2>
                         <p className="lead mb-0">Add comments and share your insights!</p>
