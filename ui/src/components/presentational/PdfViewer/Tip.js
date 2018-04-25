@@ -4,6 +4,10 @@ import React, { Component } from "react";
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
+import { LoginOrChild } from '../../container/LoginOrChild';
+//TODO: see if there is another way to grab store
+import { store } from '../../../index';
+
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
@@ -65,19 +69,21 @@ class Tip extends Component<Props, State> {
               }}
             >
               <div>
+                <LoginOrChild message="Log in to comment" store={store}>
                 {/* TODO: determine whether to use controlled or uncontrolled component here */}
-                <TextField
-                  fullWidth={true}
-                  hintText="Your comment"
-                  defaultValue={text}
-                  multiLine={true}
-                  onChange={event => this.setState({ text: event.target.value })}
-                  ref={node => {
-                    if (node) {
-                      node.focus();
-                    }
-                  }}
-                />
+                  <TextField
+                    fullWidth={true}
+                    hintText="Your comment"
+                    defaultValue={text}
+                    multiLine={true}
+                    onChange={event => this.setState({ text: event.target.value })}
+                    ref={node => {
+                      if (node) {
+                        node.focus();
+                      }
+                    }}
+                  />
+                </LoginOrChild>
               </div>
               <div>
                 <RaisedButton primary={true} type="submit" value="Save">

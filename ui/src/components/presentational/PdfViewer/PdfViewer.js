@@ -1,7 +1,4 @@
 import React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import * as actionCreators from '../../../actions/resource';
 
 import LinearProgress from 'material-ui/LinearProgress';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -324,13 +321,13 @@ class PdfViewer extends React.Component<Props, State> {
                       hideTipAndSelection,
                       transformSelection
                     ) => (
-                      <Tip
-                        onOpen={transformSelection}
-                        onConfirm={comment => {
-                          this.addHighlight({ content, position, comment });
-                          hideTipAndSelection();
-                        }}
-                      />
+                        <Tip
+                          onOpen={transformSelection}
+                          onConfirm={comment => {
+                            this.addHighlight({ content, position, comment });
+                            hideTipAndSelection();
+                          }}
+                        />
                     )}
                     highlightTransform={(
                       highlight,

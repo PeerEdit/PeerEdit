@@ -89,7 +89,6 @@ export function loginUser(email, password) {
                 response => {
                     try {
                         dispatch(loginUserSuccess(response.data.token));
-                        browserHistory.push('/main');
                     } catch (e) {
                         alert(e);
                         dispatch(loginUserFailure({
@@ -147,7 +146,6 @@ export function registerUser(email, password) {
                 response => {
                     try {
                         dispatch(registerUserSuccess(response.data.token));
-                        browserHistory.push('/main');
                     } catch (e) {
                         dispatch(registerUserFailure({
                             response: {

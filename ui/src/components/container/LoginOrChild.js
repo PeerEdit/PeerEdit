@@ -25,7 +25,7 @@ class LoginOrChild extends React.Component {
     render() {
         if (! this.props.userName) {
             return (
-                <LoginOrRegisterModal message={this.props.message}/>
+                <LoginOrRegisterModal message={this.props.message} {...this.props} />
             );
         }
         else {

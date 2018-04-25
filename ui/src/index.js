@@ -13,7 +13,7 @@ import './style.scss';
 
 injectTapEventPlugin();
 
-const store = configureStore(rootReducer({}, {type: INITIALIZE_STORE}));
+export const store = configureStore(rootReducer({}, {type: INITIALIZE_STORE}));
 const history = syncHistoryWithStore(browserHistory, store);
 
 ReactDOM.render(
