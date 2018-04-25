@@ -44,7 +44,8 @@ class ResourceUploadForm extends React.Component {
         return (
             <div>
                 <form onSubmit={this.handleSubmit}>
-                    <input type='text' value={this.state.url} onChange={this.handleUrlInputChange} />
+                    <label htmlFor='url'>Link to PDF:&nbsp;&nbsp;</label>
+                    <input id='url' type='text' value={this.state.url} placeholder={'https://....'} onChange={this.handleUrlInputChange} />
                 </form>
                 {this.props.inProg ? <p>Indexing resource...</p> : null}
                 {this.props.uploadedObj && ! this.props.uploadErrors 

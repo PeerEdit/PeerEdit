@@ -4,6 +4,9 @@ import { ResourceLookupForm } from '../components/container/ResourceLookupForm';
 import { ResourceUploadForm } from '../components/container/ResourceUploadForm';
 import { LoginOrRegisterModal } from '../components/presentational/LoginOrRegisterModal';
 import { AuthDetector } from '../components/container/AuthDetector';
+import { LoginOrChild } from '../components/container/LoginOrChild';
+
+import Paper from 'material-ui/Paper';
 
 import '../../scss/landing-page.scss';
 import 'bootstrap';
@@ -15,30 +18,25 @@ class MainNavigation extends React.Component {
 
                 <nav className="navbar navbar-light bg-light static-top">
                   <div className="container">
-                    <a className="navbar-brand" href="#">Start Bootstrap</a>
-                    <a className="btn btn-primary" href="#">Sign In</a>
+                    <a className="navbar-brand" href="#">PeerEdit</a>
+                    <AuthDetector />
                   </div>
                 </nav>
 
 
                 <header className="masthead text-white text-center">
                   <div className="overlay"></div>
-                  <div className="container">
+                  <div className="container-fluid">
                     <div className="row">
-                      <div className="col-xl-9 mx-auto">
-                        <h1 className="mb-5">Build a landing page for your business or project and generate more leads!</h1>
+                      <div className="col-lg-6 mx-auto">
+                        <h1 className="mb-5">Drop a PDF here and join the conversation!</h1>
+                        <ResourceLookupForm />
                       </div>
-                      <div className="col-md-10 col-lg-8 col-xl-7 mx-auto">
-                        <form>
-                          <div className="form-row">
-                            <div className="col-12 col-md-9 mb-2 mb-md-0">
-                              <input type="email" className="form-control form-control-lg" placeholder="Enter your email..." />
-                            </div>
-                            <div className="col-12 col-md-3">
-                              <button type="submit" className="btn btn-block btn-lg btn-primary">Sign up!</button>
-                            </div>
-                          </div>
-                        </form>
+                      <div className="col-lg-6 mx-auto">
+                        <h1 className="mb-5">Or tell us about a new PDF to add:</h1>
+                        <LoginOrChild message={"Log in to report resource"}>
+                          <ResourceUploadForm />
+                        </LoginOrChild>
                       </div>
                     </div>
                   </div>
@@ -53,8 +51,8 @@ class MainNavigation extends React.Component {
                           <div className="features-icons-icon d-flex">
                             <i className="icon-screen-desktop m-auto text-primary"></i>
                           </div>
-                          <h3>Fully Responsive</h3>
-                          <p className="lead mb-0">This theme will look great on any device, no matter the size!</p>
+                          <h3>Collaborative</h3>
+                          <p className="lead mb-0">Making it easy to share insights with colleages and friends.</p>
                         </div>
                       </div>
                       <div className="col-lg-4">
@@ -62,8 +60,8 @@ class MainNavigation extends React.Component {
                           <div className="features-icons-icon d-flex">
                             <i className="icon-layers m-auto text-primary"></i>
                           </div>
-                          <h3>Bootstrap 4 Ready</h3>
-                          <p className="lead mb-0">Featuring the latest build of the new Bootstrap 4 framework!</p>
+                          <h3>Open Source</h3>
+                          <p className="lead mb-0">Our source code is <a href="https://www.github.com/PeerEdit/PeerEdit">here</a> to look at.</p>
                         </div>
                       </div>
                       <div className="col-lg-4">
@@ -71,8 +69,8 @@ class MainNavigation extends React.Component {
                           <div className="features-icons-icon d-flex">
                             <i className="icon-check m-auto text-primary"></i>
                           </div>
-                          <h3>Easy to Use</h3>
-                          <p className="lead mb-0">Ready to use with your own content, or customize the source files!</p>
+                          <h3>Extensible</h3>
+                          <p className="lead mb-0">Contribute to our Github project and report issues and improvements!</p>
                         </div>
                       </div>
                     </div>
@@ -85,23 +83,23 @@ class MainNavigation extends React.Component {
                     <div className="row no-gutters">
 
                       <div className="col-lg-6 order-lg-2 text-white showcase-img" style={{backgroundImage: 'url("/img/bg-showcase-1.jpg")'}}></div>
-                      <div className="col-lg-6 order-lg-1 my-auto showcase-text">
-                        <h2>Fully Responsive Design</h2>
-                        <p className="lead mb-0">When you use a theme created by Start Bootstrap, you know that the theme will look great on any device, whether it's a phone, tablet, or desktop the page will behave responsively!</p>
+                      <div className="col-lg-6 order-lg-1 my-auto showcase-text" style={{padding: '3em'}}>
+                        <h2>Discuss</h2>
+                        <p className="lead mb-0">Add comments and share your insights!</p>
                       </div>
                     </div>
                     <div className="row no-gutters">
                       <div className="col-lg-6 text-white showcase-img" style={{backgroundImage: 'url("/img/bg-showcase-2.jpg")'}}></div>
-                      <div className="col-lg-6 my-auto showcase-text">
-                        <h2>Updated For Bootstrap 4</h2>
-                        <p className="lead mb-0">Newly improved, and full of great utility classNamees, Bootstrap 4 is leading the way in mobile responsive web development! All of the themes on Start Bootstrap are now using Bootstrap 4!</p>
+                      <div className="col-lg-6 my-auto showcase-text" style={{padding: '3em'}}>
+                        <h2>Upload</h2>
+                        <p className="lead mb-0">Report new information to discuss!</p>
                       </div>
                     </div>
                     <div className="row no-gutters">
                       <div className="col-lg-6 order-lg-2 text-white showcase-img" style={{backgroundImage: 'url("/img/bg-showcase-3.jpg")'}}></div>
-                      <div className="col-lg-6 order-lg-1 my-auto showcase-text">
-                        <h2>Easy to Use &amp; Customize</h2>
-                        <p className="lead mb-0">Landing Page is just HTML and CSS with a splash of SCSS for users who demand some deeper customization options. Out of the box, just add your content and images, and your new landing page will be ready to go!</p>
+                      <div className="col-lg-6 order-lg-1 my-auto showcase-text" style={{padding: '3em'}}>
+                        <h2>Share</h2>
+                        <p className="lead mb-0">Copy links and share insights with your friends!</p>
                       </div>
                     </div>
                   </div>
@@ -123,7 +121,7 @@ class MainNavigation extends React.Component {
                         <div className="testimonial-item mx-auto mb-5 mb-lg-0">
                           <img className="img-fluid rounded-circle mb-3" src="img/testimonials-2.jpg" alt="" />
                           <h5>Fred S.</h5>
-                          <p className="font-weight-light mb-0">"Bootstrap is amazing. I've been using it to create lots of super nice landing pages."</p>
+                          <p className="font-weight-light mb-0">"I love being able to share specific things with just a few clicks!"</p>
                         </div>
                       </div>
                       <div className="col-lg-4">
@@ -143,19 +141,7 @@ class MainNavigation extends React.Component {
                   <div className="container">
                     <div className="row">
                       <div className="col-xl-9 mx-auto">
-                        <h2 className="mb-4">Ready to get started? Sign up now!</h2>
-                      </div>
-                      <div className="col-md-10 col-lg-8 col-xl-7 mx-auto">
-                        <form>
-                          <div className="form-row">
-                            <div className="col-12 col-md-9 mb-2 mb-md-0">
-                              <input type="email" className="form-control form-control-lg" placeholder="Enter your email..." />
-                            </div>
-                            <div className="col-12 col-md-3">
-                              <button type="submit" className="btn btn-block btn-lg btn-primary">Sign up!</button>
-                            </div>
-                          </div>
-                        </form>
+                        <h2 className="mb-4">Why are you still reading? Get started now!</h2>
                       </div>
                     </div>
                   </div>
@@ -182,7 +168,7 @@ class MainNavigation extends React.Component {
                             <a href="#">Privacy Policy</a>
                           </li>
                         </ul>
-                        <p className="text-muted small mb-4 mb-lg-0">&copy; Your Website 2018. All Rights Reserved.</p>
+                        <p className="text-muted small mb-4 mb-lg-0">&copy; PeerEdit 2018. All Rights Reserved.</p>
                       </div>
                       <div className="col-lg-6 h-100 text-center text-lg-right my-auto">
                         <ul className="list-inline mb-0">
@@ -210,32 +196,5 @@ class MainNavigation extends React.Component {
         );
     }
 }
-
-/*
-
-                <h1>PeerEdit Main Navigation</h1>
-                <section>
-                    <h2>Lookup Form</h2>
-                    <ResourceLookupForm />
-                </section>
-                <section>
-                    <h2>Report New Resource</h2>
-                    <p>Help advance the collection of new knowledge! Report
-                       a new resource</p>
-                    <ResourceUploadForm />
-                </section>
-                <section>
-                    <h2>About PeerEdit</h2>
-                </section>
-                <section>
-                    <h2>Sign In Below</h2>
-                    <LoginOrRegisterModal />
-                </section>
-                <section>
-                    <h2>Auth Detection</h2>
-                    <AuthDetector />
-                </section>
-
-*/
 
 export { MainNavigation };

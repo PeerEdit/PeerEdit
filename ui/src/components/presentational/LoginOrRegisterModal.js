@@ -27,16 +27,17 @@ class LoginOrRegisterModal extends React.Component {
     render() {
         return (
             <div>
+                {this.props.message ? <h4>{this.props.message}</h4> : null}
                 {this.state.displayLoginForm
                     ? (<div>
                             <LoginForm />
-                            <a href="#" onClick={this.handleMoveToRegister}>
+                            <a href="javascript:void(0)" onClick={this.handleMoveToRegister}>
                                 No account? Click to register!
                             </a>
                        </div>)
                     : (<div>
                             <RegisterForm />
-                            <a href="#" onClick={this.handleMoveToLoginPage}>
+                            <a href="javascript:void(0)" onClick={this.handleMoveToLoginPage}>
                                 Already have an account? Click to login!
                             </a>
                        </div>)}

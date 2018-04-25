@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 
 import * as actionCreators from '../../actions/auth';
 
+import { LoginOrRegisterModal } from '../presentational/LoginOrRegisterModal';
+
 function mapStateToProps(state) {
     return {
         userName: state.auth.userName,
@@ -15,32 +17,24 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators(actionCreators, dispatch);
 }
 
-class AuthDetector extends React.Component {
+class LoginOrChild extends React.Component {
     constructor(props) {
         super(props);
-
-        this.handleLogout = this.handleLogout.bind(this)
-    }
-
-    handleLogout(event) {
-        event.preventDefault();
-        this.props.logoutInPlace();
     }
 
     render() {
-        if (this.props.userName) {
+        if (! this.props.userName) {
             return (
-              <div>
-                <p>Welcome, {this.props.userName} <button onClick={this.handleLogout}>Logout</button></p>
-
-              </div>
+                <LoginOrRegisterModal message={this.props.message}/>
             );
         }
         else {
-            return null
+            return (
+                this.props.children
+            );
         }
     }
 }
 
-AuthDetector = connect(mapStateToProps, mapDispatchToProps)(AuthDetector);
-export { AuthDetector };
+LoginOrChild = connect(mapStateToProps, mapDispatchToProps)(LoginOrChild);
+export { LoginOrChild };

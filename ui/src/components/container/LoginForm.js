@@ -53,8 +53,10 @@ class LoginForm extends React.Component {
             <div>
                 {this.props.statusText ? <p>{this.props.statusText}</p> : null}
                 <form onSubmit={this.handleSubmit}>
-                    <input type='text' onChange={this.handleEmailFieldChange} />
-                    <input type='password' onChange={this.handlePasswordFieldChange} />
+                    <label htmlFor='email'>Email:&nbsp;&nbsp;</label>
+                    <input id='email' type='text' onChange={this.handleEmailFieldChange} /><br/>
+                    <label htmlFor='password'>Password:&nbsp;&nbsp;</label>
+                    <input id='password' type='password' onChange={this.handlePasswordFieldChange} /><br/>
                     <button onClick={this.handleSubmit}>Login</button>
                 </form>
             </div>
