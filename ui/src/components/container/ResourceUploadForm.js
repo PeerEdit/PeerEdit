@@ -46,6 +46,9 @@ class ResourceUploadForm extends React.Component {
                 <form onSubmit={this.handleSubmit}>
                     <input type='text' value={this.state.url} onChange={this.handleUrlInputChange} />
                 </form>
+                {this.props.inProg ? <p>Indexing resource...</p> : null}
+                {this.props.uploadedObj && ! this.props.uploadErrors 
+                        ? <p>Successfully indexed resource</p> : null}
             </div>
         );
     }
