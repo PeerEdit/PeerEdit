@@ -1,51 +1,59 @@
-# PeerEdit - built from React-Redux-Flask
+# PeerEdit
 
-Boilerplate application for a Flask JWT Backend and a React/Redux Front-End with Material UI.
+PeerEdit is an application platform for tools to better interface with data in various forms, as it changes over time. PeerEdit aims to make data more accessible and to make human insights about data indexable and searchable - promoting discovery and collaboration.
 
-* Python 2.7+ or 3.x
-* Pytest
-* Heroku
+## Stack
+
+* React / Redux
+* Babel 6  / Webpack
 * Flask
-* React
-* Redux
-* React-Router 2.0
-* React-Router-Redux
-* Babel 6
-* SCSS processing
-* Webpack
+* Express.js
+* NGINX
+* MongoDB
 
-![screenshot](http://i.imgur.com/ZIS4qkw.png)
+## Configuring PeerEdit
 
-### Create DB
+In a development mode, you will generally run all components for the system on a single machine. Follow the configuration steps provided here.
+
+### MongoDB
+
+Install MongoDB on your system, following documentation [here](https://docs.mongodb.com/manual/installation/). Once MongoDB is installed, start it.
 ```sh
-$ export DATABASE_URL="postgresql://username:password@localhost/mydatabase"
-
-or
-
-$ export DATABASE_URL="mysql+mysqlconnector://username:password@localhost/mydatabase"
-
-or
-
-$ export DATABASE_URL="sqlite:///your.db"
-```
-(More about connection strings in this [flask config guide](http://flask-sqlalchemy.pocoo.org/2.1/config/).)
-```
-$ python manage.py create_db
-$ python manage.py db upgrade
-$ python manage.py db migrate
+mongod
 ```
 
-To update database after creating new migrations, use:
+### Flask
+
+PeerEdit is written and tested with Python 3.5.2 (python3). We recommend using [virtualenv](https://virtualenv.pypa.io/en/stable/) to segregate your python development environment, but global installation of dependencies is also possible.
+
+A typical virtualenv installation follows the below steps.
 
 ```sh
-$ python manage.py db upgrade
+virtualenv venv
+. venv/bin/activate
+pip install -r requirements.txt
+export DATABASE_URL="mongodb://localhost:27017/peeredit"
+python manage.py runserver
+````
+
+Which should indicate that the server is running. If running MongoDB in a remote location, substitute the appropriate connection string to the  `DATABASE_URL` environment variable.
+
+### Node.js (Express.js)
+
+```sh
+cd ui
+npm install
+npm start
 ```
 
-### Install Front-End Requirements
+### NGINX
+
 ```sh
-$ cd static
-$ npm install
+sudo apt-get install nginx
+sudo ./nginx/setup_nginx
+sudo nginx -s reload
 ```
+
 
 ### Run Back-End
 
@@ -72,70 +80,10 @@ $ npm start
 $ npm run build:production
 ```
 
-### New to Python?
-
-If you are approaching this demo as primarily a frontend dev with limited or no python experience, you may need to install a few things that a seasoned python dev would already have installed.
-
-Most Macs already have python 2.7 installed but you may not have pip install. You can check to see if you have them installed:
-
-```
-$ python --version
-$ pip --version 
-```
-
-If pip is not installed, you can follow this simple article to [get both homebrew and python](https://howchoo.com/g/mze4ntbknjk/install-pip-on-mac-os-x)
-
-After you install python, you can optionally also install python 3
-
-```
-$ brew install python3
-```
-
-Now you can check again to see if both python and pip are installed. Once pip is installed, you can download the required flask modules:
-
-```
-$ sudo pip install flask flask_script flask_migrate flask_bcrypt 
-```
-
-Now, you can decide on which database you wish to use. 
-
-#### New to MySQL? 
-
-If you decide on MySQL, install the free community edition of [MySQL](https://dev.mysql.com/downloads/mysql/) and [MySQL Workbench](https://www.mysql.com/products/workbench/)
-
-1. start MySQL from the System Preferences
-2. open MySQL Workbench and [create a database](http://stackoverflow.com/questions/5515745/create-a-new-database-with-mysql-workbench) called mydatabase but don't create the tables since python will do that for you
-3. Install the MySQL connector for Python, add the DATABASE_URL configuration, and create the database and tables
-
-```
-$ sudo pip install mysql-connector-python-rf
-$ export DATABASE_URL="mysql+mysqlconnector://username:password@localhost/mydatabase"
-$ python manage.py create_db
-```
-
-Note: you do not need to run "python manage.py db upgrade" or "python manage.py db migrate" if its your first go at it
-
-4. Run Back-End
-
-```
-$ python manage.py runserver
-```
-
-If all goes well, you should see ```* Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)``` followed by a few more lines in the terminal.
-
-5. open a new tab to the same directory and run the front end
-
-```
-$ cd static
-$ npm install
-$ npm start
-```
-
-6. open your browser to http://localhost:3000/register and setup your first account
-7. enjoy! By this point, you should be able to create an account and login without errors. 
-
 ## Attributions
 
-Some icons have been copied into this project from "flaticon" (https://www.freepik.com/flaticon)
+Some icons have been copied into this project from ["flaticon"](https://www.freepik.com/flaticon).
 
+The original boilerplate code for this project has been adapted from [React-Redux-Flask](https://github.com/dternyak/React-Redux-Flask) by [dternyak](https://github.com/dternyak).
 
+The PdfViewer component has been adapted from [react-pdf-annotator](https://github.com/agentcooper/react-pdf-annotator) by [agentcooper](https://github.com/agentcooper).
