@@ -153,20 +153,13 @@ function Sidebar(props) {
           </li>
         ))}
       </ul>
-      {highlights.length > 0 ? (
-        <div style={{ padding: "1rem" }}>
-          <a href="#" onClick={resetHighlights}>
-            Reset highlights
-          </a>
-        </div>
-      ) : null}
     </div>
   );
 }
 
 const fuseOptions = {
-  keys: ['comment.text'],
-  id: 'id'
+  keys: ['text', 'replies.text'],
+  id: '_id'
 };
 
 type Props = {};
@@ -181,28 +174,19 @@ class PdfViewer extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
+
     this.state = {
       highlightsFilter: showAllHighlightsFilter,
-      fuseInterface: new Fuse([], fuseOptions)
+      fuseInterface: new Fuse(this.props.comments || [], fuseOptions)
     };
 
     this.searchHighlights = this.searchHighlights.bind(this);
-    this.resetHighlights = this.resetHighlights.bind(this);
     this.scrollViewerTo = this.scrollViewerTo.bind(this);
     this.scrollToHighlightFromHash = this.scrollToHighlightFromHash.bind(this);
     this.postReplyGenerator = this.postReplyGenerator.bind(this);
     this.getHighlightById = this.getHighlightById.bind(this);
     this.getProtoAndTarget = this.getProtoAndTarget.bind(this);
   }
-
-  resetHighlights() {
-    this.setState((prevState, props) => {
-      return {
-        highlightsFilter: showAllHighlightsFilter,
-        fuseInterface: new Fuse([], fuseOptions)
-      }
-    });
-  };
 
   scrollViewerTo(highlight: any){};
 
@@ -220,6 +204,12 @@ class PdfViewer extends React.Component<Props, State> {
       this.scrollToHighlightFromHash,
       false
     );
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      fuseInterface: new Fuse(nextProps.comments || [], fuseOptions),
+    })
   }
 
   getHighlightById(id: string) {
@@ -272,7 +262,6 @@ class PdfViewer extends React.Component<Props, State> {
   render() {
     const { pageNumber, numPages } = this.state;
     const commentsNotNull = this.props.comments || [];
-
     // if proxy will be enabled in the future
     //const urlInfo = this.getProtoAndTarget(this.props.resource.links[0].url);
     //const proxyBase = urlInfo.proto === "http:" ? "/px_http/" : "/px_https/";
