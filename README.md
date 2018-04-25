@@ -11,6 +11,8 @@ PeerEdit is an application platform for tools to better interface with data in v
 * NGINX
 * MongoDB
 
+![Architecture Diagram](docs/PeerEdit_Architecture.jpg?raw=true "Architecture Diagram")
+
 ## Configuring PeerEdit
 
 In a development mode, you will generally run all components for the system on a single machine. Follow the configuration steps provided here.
